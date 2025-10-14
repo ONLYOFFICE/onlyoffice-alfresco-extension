@@ -1,9 +1,13 @@
-<h1 mat-dialog-title [innerHTML]="title" data-automation-id="premission-title"></h1>
-<div mat-dialog-content class="onlyoffice-alfresco-extension-permissions-content">
-  <adf-permission-list [nodeId]="node.id" />
-</div>
-<div mat-dialog-actions class="onlyoffice-alfresco-extension-permissions-footer">
-  <button mat-button mat-dialog-close data-automation-id="permissions-dialog-cancel-button">
-    {{ 'ONLYOFFICE_ALFRESCO_EXTENSION.BUTTONS.CANCEL' | translate }}
-  </button>
+<div class="onlyoffice-alfresco-extension-dialog">
+  <h1 mat-dialog-title>{{ 'APP.BROWSE.PERSONAL.PERMISSIONS.TITLE' | translate }}</h1>
+
+  <mat-dialog-content class="onlyoffice-alfresco-extension-dialog-content">
+    <adf-permission-list [nodeId]="node.id" />
+  </mat-dialog-content>
+
+  <mat-dialog-actions class="onlyoffice-alfresco-extension-dialog-footer">
+    <button mat-button mat-dialog-close>
+      {{ 'ONLYOFFICE_ALFRESCO_EXTENSION.BUTTONS.CANCEL' | translate }}
+    </button>
+  </mat-dialog-actions>
 </div>

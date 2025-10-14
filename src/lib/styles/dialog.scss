@@ -1,0 +1,21 @@
+.onlyoffice-alfresco-extension-dialog {
+  .onlyoffice-alfresco-extension-dialog {
+    &-content {
+      padding: 0;
+      overflow: unset;
+    }
+
+    &-footer {
+      justify-content: flex-end;
+
+      button {
+        text-transform: uppercase;
+        font-weight: normal;
+      }
+    }
+
+    &-action-button:enabled {
+      color: var(--theme-primary-color);
+    }
+  }
+}

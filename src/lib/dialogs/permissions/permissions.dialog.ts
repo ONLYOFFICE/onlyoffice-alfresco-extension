@@ -18,12 +18,11 @@
  */
 
 import { CommonModule } from '@angular/common';
-import { Component, Inject, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, Inject, ViewEncapsulation } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 
 import { PermissionListComponent } from '@alfresco/adf-content-services';
-import { TranslationService } from '@alfresco/adf-core';
 import { Node } from '@alfresco/js-api';
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -32,17 +31,9 @@ import { TranslatePipe } from '@ngx-translate/core';
   templateUrl: './permissions.dialog.html',
   styleUrls: ['./permissions.dialog.scss'],
   selector: 'onlyoffice-alfresco-extension-permissions-dialog',
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  host: { class: 'onlyoffice-alfresco-extension' }
 })
-export class PermissionsDialogComponent implements OnInit {
-  title = '';
-
-  constructor(
-    private translationService: TranslationService,
-    @Inject(MAT_DIALOG_DATA) public node: Node
-  ) {}
-
-  ngOnInit(): void {
-    this.title = this.translationService.instant('APP.BROWSE.PERSONAL.PERMISSIONS.TITLE');
-  }
+export class PermissionsDialogComponent {
+  constructor(@Inject(MAT_DIALOG_DATA) public node: Node) {}
 }

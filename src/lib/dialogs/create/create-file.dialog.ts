@@ -27,7 +27,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 
 import { AppStore } from '@alfresco/aca-shared/store';
-import { TranslationService } from '@alfresco/adf-core';
 import { Node } from '@alfresco/js-api';
 import { Store } from '@ngrx/store';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -39,15 +38,13 @@ import { CreateFile } from '../../actions/onlyoffice-alfresco-extension.actions'
   templateUrl: './create-file.dialog.html',
   styleUrls: ['./create-file.dialog.scss'],
   selector: 'onlyoffice-alfresco-extension-create-file-dialog',
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  host: { class: 'onlyoffice-alfresco-extension' }
 })
 export class CreateFileDialogComponent implements OnInit {
-  public form: UntypedFormGroup;
-
-  title = '';
+  form: UntypedFormGroup;
 
   constructor(
-    private translationService: TranslationService,
     private store: Store<AppStore>,
     private formBuilder: UntypedFormBuilder,
     private dialogRef: MatDialogRef<CreateFileDialogComponent>,
@@ -58,8 +55,6 @@ export class CreateFileDialogComponent implements OnInit {
     this.form = this.formBuilder.group({
       documentType: ['application/vnd.openxmlformats-officedocument.wordprocessingml.document', [Validators.required]]
     });
-
-    this.title = this.translationService.instant('ONLYOFFICE_ALFRESCO_EXTENSION.PAGES.CREATE.TITLE');
   }
 
   onSubmit() {
