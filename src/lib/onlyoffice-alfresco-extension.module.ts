@@ -26,7 +26,12 @@ import { provideEffects } from '@ngrx/effects';
 
 import { EditorComponent } from './components/editor/editor.component';
 import { OnlyofficeAlfrescoExtensionEffects } from './effects/onlyoffice-alfresco-extension.effects';
-import { displayConvertAction, displayEditAction, displayViewAction, onlyofficeAlfrescoExtensionLoader } from './rules';
+import {
+  displayConvertAction,
+  displayEditAction,
+  displayViewAction,
+  onlyofficeAlfrescoExtensionLoader
+} from './rules/onlyoffice-alfresco-extension.rules';
 
 export function provideOnlyofficeAlfrescoExtension(): (Provider | EnvironmentProviders)[] {
   return [
