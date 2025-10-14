@@ -1,0 +1,38 @@
+/* stylelint-disable selector-class-pattern */
+
+onlyoffice-alfresco-extension-permissions-dialog {
+  overflow: visible;
+  display: block;
+  margin-left: -24px;
+  margin-right: -24px;
+
+  .adf-permission-card {
+    padding: 0;
+    border: none;
+    box-shadow: none;
+  }
+
+  .onlyoffice-alfresco-extension-permissions {
+    &-content {
+      padding: 0 !important;
+      overflow: unset !important;
+    }
+
+    &-footer {
+      padding: 8px 22px;
+      display: flex;
+      justify-content: flex-end;
+      color: var(--theme-secondary-text-color);
+
+      button {
+        text-transform: uppercase;
+        font-weight: normal;
+      }
+    }
+  }
+}
+
+.adf-permission-pop-over {
+  max-width: 752px !important;
+  padding-right: 0 !important;
+}

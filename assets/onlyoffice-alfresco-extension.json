@@ -1,0 +1,177 @@
+{
+  "$id": "onlyoffice-alfresco-extension",
+  "$version": "0.0.1",
+  "$vendor": "Ascensio System SIA <integration@onlyoffice.com> (https://www.onlyoffice.com)",
+  "$name": "ONLYOFFICE Docs",
+  "$description": "ONLYOFFICE Docs plugin",
+  "$license": "Apache-2.0",
+
+  "actions": [
+    {
+      "id": "onlyoffice-alfresco-extension.open-editor-action",
+      "type": "NAVIGATE_ROUTE",
+      "payload": "$(['/onlyoffice-editor', context.selection.first.entry.nodeId || context.selection.first.entry.id])"
+    }
+  ],
+  
+  "features": {
+    "toolbar": [
+      {
+        "id": "app.toolbar.create",
+        "children": [
+          {
+            "id": "onlyoffice-alfresco-extension:toolbar:app.toolbar.create:create-item",
+
+            "order": 100,
+            "icon": "description",
+            "title": "ONLYOFFICE_ALFRESCO_EXTENSION.BUTTONS.CREATE_IN_ONLYOFFICE",
+            "actions": {
+              "click": "ONLYOFFICE_ALFRESCO_EXTENSION_OPEN_CREATE_FILE_DIALOG"
+            },
+            "rules": {
+              "visible": [
+                "app.isContentServiceEnabled",
+                "app.navigation.folder.canCreate"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "app.toolbar.more",
+        "children": [
+          {
+            "id": "onlyoffice-alfresco-extension:toolbar:app.toolbar.more:view-item",
+            "order": 90,
+            "icon": "visibility",
+            "title": "ONLYOFFICE_ALFRESCO_EXTENSION.BUTTONS.VIEW_IN_ONLYOFFICE",
+            "actions": {
+              "click": "onlyoffice-alfresco-extension.open-editor-action"
+            },
+            "rules": {
+              "visible": "onlyoffice-alfresco-extension.rules.displayViewAction"
+            }
+          },
+          {
+            "id": "onlyoffice-alfresco-extension:toolbar:app.toolbar.more:edit-item",
+            "order": 90,
+            "icon": "edit",
+            "title": "ONLYOFFICE_ALFRESCO_EXTENSION.BUTTONS.EDIT_IN_ONLYOFFICE",
+            "actions": {
+              "click": "onlyoffice-alfresco-extension.open-editor-action"
+            },
+            "rules": {
+              "visible": "onlyoffice-alfresco-extension.rules.displayEditAction"
+            }
+          },
+          {
+            "id": "onlyoffice-alfresco-extension:toolbar:app.toolbar.more:convert-item",
+            "order": 91,
+            "icon": "cached",
+            "title": "ONLYOFFICE_ALFRESCO_EXTENSION.BUTTONS.CONVERT_IN_ONLYOFFICE",
+            "actions": {
+              "click": "ONLYOFFICE_ALFRESCO_EXTENSION_OPEN_CONVERT_FILE_DIALOG"
+            },
+            "rules": {
+              "visible": "onlyoffice-alfresco-extension.rules.displayConvertAction"
+            }
+          }
+        ]
+      }
+    ],
+    "contextMenu": [
+      {
+        "id": "onlyoffice-alfresco-extension:contextMenu:view-item",
+        "order": 450,
+        "icon": "visibility",
+        "title": "ONLYOFFICE_ALFRESCO_EXTENSION.BUTTONS.VIEW_IN_ONLYOFFICE",
+        "actions": {
+          "click": "onlyoffice-alfresco-extension.open-editor-action"
+        },
+        "rules": {
+          "visible": "onlyoffice-alfresco-extension.rules.displayViewAction"
+        }
+      },
+      {
+        "id": "onlyoffice-alfresco-extension:contextMenu:edit-item",
+        "order": 450,
+        "icon": "edit",
+        "title": "ONLYOFFICE_ALFRESCO_EXTENSION.BUTTONS.EDIT_IN_ONLYOFFICE",
+        "actions": {
+          "click": "onlyoffice-alfresco-extension.open-editor-action"
+        },
+        "rules": {
+          "visible": "onlyoffice-alfresco-extension.rules.displayEditAction"
+        }
+      },
+      {
+        "id": "onlyoffice-alfresco-extension:toolbar:app.toolbar.more:convert-item",
+        "order": 451,
+        "icon": "cached",
+        "title": "ONLYOFFICE_ALFRESCO_EXTENSION.BUTTONS.CONVERT_IN_ONLYOFFICE",
+        "actions": {
+          "click": "ONLYOFFICE_ALFRESCO_EXTENSION_OPEN_CONVERT_FILE_DIALOG"
+        },
+        "rules": {
+          "visible": "onlyoffice-alfresco-extension.rules.displayConvertAction"
+        }
+      }
+    ],
+    "viewer": {
+      "toolbarActions": [
+        {
+          "id": "app.viewer.toolbar.more",
+          "children": [
+            {
+              "id": "onlyoffice-alfresco-extension:viewer:toolbarActions:app.viewer.toolbar.more:view-action",
+              "order": 1,
+              "icon": "visibility",
+              "title": "ONLYOFFICE_ALFRESCO_EXTENSION.BUTTONS.VIEW_IN_ONLYOFFICE",
+              "actions": {
+                "click": "onlyoffice-alfresco-extension.open-editor-action"
+              },
+              "rules": {
+                "visible": "onlyoffice-alfresco-extension.rules.displayViewAction"
+              }
+            },
+            {
+              "id": "onlyoffice-alfresco-extension:viewer:toolbarActions:app.viewer.toolbar.more:edit-action",
+              "order": 1,
+              "icon": "edit",
+              "title": "ONLYOFFICE_ALFRESCO_EXTENSION.BUTTONS.EDIT_IN_ONLYOFFICE",
+              "actions": {
+                "click": "onlyoffice-alfresco-extension.open-editor-action"
+              },
+              "rules": {
+                "visible": "onlyoffice-alfresco-extension.rules.displayEditAction"
+              }
+            },
+            {
+              "id": "onlyoffice-alfresco-extension:toolbar:app.toolbar.more:convert-item",
+              "order": 2,
+              "icon": "cached",
+              "title": "ONLYOFFICE_ALFRESCO_EXTENSION.BUTTONS.CONVERT_IN_ONLYOFFICE",
+              "actions": {
+                "click": "ONLYOFFICE_ALFRESCO_EXTENSION_OPEN_CONVERT_FILE_DIALOG"
+              },
+              "rules": {
+                "visible": "onlyoffice-alfresco-extension.rules.displayConvertAction"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "routes": [ 
+    {
+      "id": "onlyoffice-alfresco-extension.editor-route",
+      "path": "onlyoffice-editor/:nodeId",
+      "component": "onlyoffice-alfresco-extension.editor.component",
+      "layout": "blank",
+      "data": {
+        "title": "ONLYOFFICE"
+      }
+    }
+  ] 
+}

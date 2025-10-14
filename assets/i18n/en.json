@@ -1,0 +1,42 @@
+{
+  "ONLYOFFICE_ALFRESCO_EXTENSION": {
+    "PAGES": {
+      "EDITOR": {
+        "MESSAGES": {
+          "DEMO_NOTIFICATION": "You are using public demo ONLYOFFICE Document Server. Please do not store private sensitive data.",
+          "DOCS_API_UNDEFINED": "ONLYOFFICE cannot be reached. Please contact admin"
+        }
+      },
+      "CREATE": {
+        "TITLE": "Create with ONLYOFFICE",
+        "FIELDS": {
+          "DOCUMENT_TYPE": {
+            "TITLE": "Document type",
+            "OPTIONS": {
+              "WORD": "Document",
+              "CELL": "Spreadsheet",
+              "SLIDE": "Presentation",
+              "PDF": "PDF Form"
+            }
+          }
+        }
+      },
+      "CONVERT": {
+        "TITLE": "Converting {{name}}",
+        "COMPLETE": "complete",
+        "MESSAGES": {
+          "SUCCESS": "{{name}} was successfully converted",
+          "ERROR": "Could not convert {{name}}"
+        }
+      }
+    },
+    "BUTTONS": {
+      "VIEW_IN_ONLYOFFICE": "View in ONLYOFFICE",
+      "EDIT_IN_ONLYOFFICE": "Edit in ONLYOFFICE",
+      "CONVERT_IN_ONLYOFFICE": "Convert using ONLYOFFICE",
+      "CREATE_IN_ONLYOFFICE": "Create with ONLYOFFICE",
+      "CANCEL": "Cancel",
+      "CREATE": "Create"
+    }
+  }
+}

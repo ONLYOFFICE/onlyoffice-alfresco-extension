@@ -1,0 +1,21 @@
+<mat-progress-spinner 
+  *ngIf="showSpinner"
+  id="onlyoffice-alfresco-extension.editor-loading"
+  class="adf-document-list-loading-margin"
+  [color]="'primary'"
+  [mode]="'indeterminate'"
+/>
+
+<aca-generic-error 
+  *ngIf="!showSpinner && error"
+  [text]="error"
+/>
+
+<document-editor
+  *ngIf="!showSpinner && !error"
+  [id]="editorId" 
+  [documentServerUrl]="documentServerUrl"
+  [config]="config"
+  [shardkey]="shardKey"
+  [onLoadComponentError]="onLoadComponentError"
+/> 

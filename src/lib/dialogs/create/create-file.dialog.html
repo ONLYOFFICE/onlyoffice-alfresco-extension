@@ -1,0 +1,46 @@
+<h2 mat-dialog-title [innerHTML]="title" class="onlyoffice-alfresco-extension-create-file-title" data-automation-id="create-file-title"></h2>
+<div mat-dialog-content class="onlyoffice-alfresco-extension-create-file-content">
+  <form [formGroup]="form" novalidate>
+    <mat-form-field class="onlyoffice-alfresco-extension-create-file-field">
+      <mat-label>{{ 'ONLYOFFICE_ALFRESCO_EXTENSION.PAGES.CREATE.FIELDS.DOCUMENT_TYPE.TITLE' | translate }}</mat-label>
+      <mat-select
+        cdkFocusInitial
+        matSelect
+        formControlName="documentType"
+        required
+      >
+        <mat-option value="application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+          {{ 'ONLYOFFICE_ALFRESCO_EXTENSION.PAGES.CREATE.FIELDS.DOCUMENT_TYPE.OPTIONS.WORD' | translate }}
+        </mat-option>
+        <mat-option value="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+          {{ 'ONLYOFFICE_ALFRESCO_EXTENSION.PAGES.CREATE.FIELDS.DOCUMENT_TYPE.OPTIONS.CELL' | translate }}
+        </mat-option>
+        <mat-option value="application/vnd.openxmlformats-officedocument.presentationml.presentation">
+          {{ 'ONLYOFFICE_ALFRESCO_EXTENSION.PAGES.CREATE.FIELDS.DOCUMENT_TYPE.OPTIONS.SLIDE' | translate }}
+        </mat-option>
+        <mat-option value="application/pdf">
+          {{ 'ONLYOFFICE_ALFRESCO_EXTENSION.PAGES.CREATE.FIELDS.DOCUMENT_TYPE.OPTIONS.PDF' | translate }}
+        </mat-option>
+      </mat-select>
+
+      <mat-error *ngIf="form.controls['documentType'].errors?.message" data-automation-id="create-file-field-error">
+        {{ form.controls['documentType'].errors?.message | translate }}
+      </mat-error>
+    </mat-form-field>
+
+  </form>
+</div>
+<div mat-dialog-actions class="onlyoffice-alfresco-extension-create-file-footer">
+  <button mat-button mat-dialog-close data-automation-id="create-file-dialog-cancel-button">
+    {{ 'ONLYOFFICE_ALFRESCO_EXTENSION.BUTTONS.CANCEL' | translate }}
+  </button>
+  <button
+    class="onlyoffice-alfresco-extension-create-file-footer-create-button"
+    [disabled]="form.invalid"
+    mat-button
+    (click)="onSubmit()"
+    data-automation-id="create-file-dialog-create-button"
+  >
+    {{ 'ONLYOFFICE_ALFRESCO_EXTENSION.BUTTONS.CREATE' | translate }}
+  </button>
+</div>
