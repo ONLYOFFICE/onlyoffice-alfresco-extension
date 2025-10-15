@@ -32,16 +32,20 @@ import {
   CreateFile,
   OnlyofficeAlfrescoExtensionActionTypes,
   OpenConvertFileDialog,
-  OpenCreateFileDialog
+  OpenCreateFileDialog,
+  OpenRoute
 } from '../actions/onlyoffice-alfresco-extension.actions';
 import { OnlyofficeApi } from '../api/onlyoffice.api';
 import { ConvertFileDialogComponent } from '../dialogs/convert/convert-file.dialog';
 import { CreateFileDialogComponent } from '../dialogs/create/create-file.dialog';
+import { UrlService } from '../services/url.service';
+import { getNodeId } from '../utils/utils';
 
 @Injectable()
 export class OnlyofficeAlfrescoExtensionEffects {
   private notificationService = inject(NotificationService);
   private dialog = inject(MatDialog);
+  private urlService = inject(UrlService);
 
   private _onlyofficeApi: OnlyofficeApi;
   get onlyofficeApi(): OnlyofficeApi {
@@ -52,6 +56,17 @@ export class OnlyofficeAlfrescoExtensionEffects {
   store = inject(Store<AppStore>);
   apiService = inject(AlfrescoApiService);
   actions$ = inject(Actions);
+
+  openRoute$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType<OpenRoute>(OnlyofficeAlfrescoExtensionActionTypes.OpenRoute),
+        map((action) => {
+          window.open(this.urlService.createUrl(action.payload), '_blank');
+        })
+      ),
+    { dispatch: false }
+  );
 
   openCreateFileDialog$ = createEffect(
     () =>
@@ -83,8 +98,7 @@ export class OnlyofficeAlfrescoExtensionEffects {
             )
             .subscribe((data: { nodeRef: string } | null) => {
               if (data) {
-                const prefix = 'workspace://SpacesStore/';
-                const nodeId = data.nodeRef.substring(prefix.length);
+                const nodeId = getNodeId(data.nodeRef);
 
                 this.dialog.closeAll();
                 this.store.dispatch(new NavigateRouteAction(['onlyoffice-editor', nodeId]));

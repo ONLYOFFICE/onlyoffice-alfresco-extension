@@ -17,24 +17,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { HashLocationStrategy, LocationStrategy } from '@angular/common';
-import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
+const NODE_REF_PREFIX = 'workspace://SpacesStore/';
 
-@Injectable({ providedIn: 'root' })
-export class UrlService {
-  constructor(
-    private router: Router,
-    private locationStrategy: LocationStrategy
-  ) {}
-
-  createUrl(payload: any[]): string {
-    const url = this.router.createUrlTree(payload).toString();
-
-    if (this.locationStrategy instanceof HashLocationStrategy) {
-      return '#' + url;
-    }
-
-    return url;
+export const getNodeId = (nodeRef: string) => {
+  if (nodeRef.startsWith(NODE_REF_PREFIX)) {
+    return nodeRef.substring(NODE_REF_PREFIX.length);
   }
-}
+
+  return nodeRef;
+};

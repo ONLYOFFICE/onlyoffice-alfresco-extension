@@ -21,10 +21,17 @@ import { ModalConfiguration } from '@alfresco/aca-shared/store';
 import { Action } from '@ngrx/store';
 
 export enum OnlyofficeAlfrescoExtensionActionTypes {
+  OpenRoute = 'ONLYOFFICE_ALFRESCO_EXTENSION_OPEN_ROUTE',
   OpenCreateFileDialog = 'ONLYOFFICE_ALFRESCO_EXTENSION_OPEN_CREATE_FILE_DIALOG',
   OpenConvertFileDialog = 'ONLYOFFICE_ALFRESCO_EXTENSION_OPEN_CONVERT_FILE_DIALOG',
   CreateFile = 'ONLYOFFICE_ALFRESCO_EXTENSION_CREATE_FILE',
   ConvertFile = 'ONLYOFFICE_ALFRESCO_EXTENSION_CONVERT_FILE'
+}
+
+export class OpenRoute implements Action {
+  readonly type = OnlyofficeAlfrescoExtensionActionTypes.OpenRoute;
+
+  constructor(public payload: any[]) {}
 }
 
 export class OpenCreateFileDialog implements Action {

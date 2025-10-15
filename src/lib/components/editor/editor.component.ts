@@ -38,6 +38,7 @@ import { PermissionsDialogComponent } from '../../dialogs/permissions/permission
 import { FaviconService } from '../../services/favicon.service';
 import { NodeSelectorService } from '../../services/node-selector.service';
 import { UrlService } from '../../services/url.service';
+import { getNodeId } from '../../utils/utils';
 
 @Component({
   selector: 'onlyoffice-alfresco-extension-editor',
@@ -346,7 +347,9 @@ export class EditorComponent implements OnInit {
     const { referenceData, windowName } = data;
     const { fileKey } = referenceData;
 
-    window.open(this.urlService.createEditorUrl(fileKey), windowName);
+    const nodeId = getNodeId(fileKey);
+
+    window.open(this.urlService.createUrl(['/onlyoffice-editor', nodeId]), windowName);
   };
 
   onRequestReferenceData = (event: { data: any }) => {
