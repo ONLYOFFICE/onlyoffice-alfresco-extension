@@ -49,7 +49,8 @@ export class CreateFile implements Action {
 
   constructor(
     public mimeType: string,
-    public folderId?: string
+    public folderId?: string,
+    public handleError?: (error: Error) => void
   ) {}
 }
 

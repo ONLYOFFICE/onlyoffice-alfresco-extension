@@ -83,6 +83,27 @@ export class EditorComponent implements OnInit {
 
   ngOnInit() {
     this.route.params.subscribe(({ nodeId }: Params) => {
+      if (nodeId === 'create-new') {
+        const match = window.name.match(/^create-new-([\w-]+):([\w.-]+\/[\w.+-]+)$/);
+
+        if (match) {
+          const parentId = match[1] || '';
+          const mimeType = match[2] || '';
+
+          this.store.dispatch(
+            new CreateFile(mimeType, parentId, (error) => {
+              this._handleError(error);
+              this.showSpinner = false;
+            })
+          );
+        } else {
+          this.error = 'APP.MESSAGES.ERRORS.GENERIC';
+          this.showSpinner = false;
+        }
+
+        return;
+      }
+
       this.nodesApi
         .getNode(nodeId, { include: ['path'] })
         .then((nodeEntry: NodeEntry) => {
@@ -90,7 +111,8 @@ export class EditorComponent implements OnInit {
         })
         .catch((error) => {
           console.error(error);
-          this.error = 'APP.MESSAGES.ERRORS.MISSING_CONTENT';
+
+          this._handleError(error);
         });
 
       this.onlyofficeApi
@@ -131,7 +153,8 @@ export class EditorComponent implements OnInit {
         })
         .catch((error) => {
           console.error(error);
-          this.error = 'APP.MESSAGES.ERRORS.GENERIC';
+
+          this._handleError(error);
         })
         .finally(() => {
           this.showSpinner = false;
@@ -209,7 +232,7 @@ export class EditorComponent implements OnInit {
         return;
     }
 
-    this.store.dispatch(new CreateFile(mimeType, this.node?.entry.parentId));
+    window.open(this.urlService.createUrl(['/onlyoffice-editor', 'create-new']), `create-new-${this.node?.entry.parentId}:${mimeType}`);
   };
 
   onRequestHistory = () => {
@@ -449,4 +472,20 @@ export class EditorComponent implements OnInit {
       this.store.dispatch(new NavigateToParentFolder(this.node));
     }
   };
+
+  private _handleError(error: Error) {
+    let statusCode: number;
+
+    try {
+      statusCode = JSON.parse(error.message).error.statusCode;
+    } catch (e) {
+      statusCode = 0;
+    }
+
+    if (statusCode !== 409) {
+      this.error = 'APP.MESSAGES.ERRORS.GENERIC';
+    } else {
+      this.error = 'APP.MESSAGES.ERRORS.CONFLICT';
+    }
+  }
 }

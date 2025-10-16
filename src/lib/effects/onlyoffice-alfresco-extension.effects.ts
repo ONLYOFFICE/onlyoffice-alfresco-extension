@@ -26,7 +26,7 @@ import { NotificationService } from '@alfresco/adf-core';
 import { Node } from '@alfresco/js-api';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { catchError, from, map, Observable, of, switchMap, take } from 'rxjs';
+import { catchError, from, map, of, switchMap, take } from 'rxjs';
 
 import {
   CreateFile,
@@ -93,7 +93,18 @@ export class OnlyofficeAlfrescoExtensionEffects {
 
           folderId$
             .pipe(
-              switchMap((folderId) => this.createNode(folderId, action.mimeType)),
+              switchMap((folderId) => {
+                return from(this.onlyofficeApi.createNode(folderId, action.mimeType)).pipe(
+                  catchError((error) => {
+                    if (action.handleError) {
+                      action.handleError(error);
+                    } else {
+                      this.handleError(error);
+                    }
+                    return of(null);
+                  })
+                );
+              }),
               take(1)
             )
             .subscribe((data: { nodeRef: string } | null) => {
@@ -143,11 +154,7 @@ export class OnlyofficeAlfrescoExtensionEffects {
     return (node as any).nodeId || (node as any).guid || node.id;
   }
 
-  private createNode(parentId: string, mimeType: string): Observable<{ nodeRef: string } | null> {
-    return from(this.onlyofficeApi.createNode(parentId, mimeType)).pipe(catchError((error) => this.handleError(error)));
-  }
-
-  private handleError(error: Error): Observable<null> {
+  private handleError(error: Error) {
     let statusCode: number;
 
     try {
@@ -161,8 +168,6 @@ export class OnlyofficeAlfrescoExtensionEffects {
     } else {
       this.notificationService.showError('APP.MESSAGES.ERRORS.CONFLICT');
     }
-
-    return of(null);
   }
 
   private focusCreateMenuButton(): void {
