@@ -25,13 +25,9 @@ import { provideExtensionConfig, provideExtensions } from '@alfresco/adf-extensi
 import { provideEffects } from '@ngrx/effects';
 
 import { EditorComponent } from './components/editor/editor.component';
+import { onlyofficeAlfrescoExtensionLoader } from './configuration/onlyoffice-alfrsco-extension.config';
 import { OnlyofficeAlfrescoExtensionEffects } from './effects/onlyoffice-alfresco-extension.effects';
-import {
-  displayConvertAction,
-  displayEditAction,
-  displayViewAction,
-  onlyofficeAlfrescoExtensionLoader
-} from './rules/onlyoffice-alfresco-extension.rules';
+import { displayConvertAction, displayEditAction, displayViewAction } from './rules/onlyoffice-alfresco-extension.rules';
 
 export function provideOnlyofficeAlfrescoExtension(): (Provider | EnvironmentProviders)[] {
   return [

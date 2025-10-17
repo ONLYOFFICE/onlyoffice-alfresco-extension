@@ -17,51 +17,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { inject } from '@angular/core';
-
 import { AcaRuleContext, canCreateFolder, hasFileSelected, hasLockedFiles, isTrashcan } from '@alfresco/aca-shared/rules';
-import { AlfrescoApiService } from '@alfresco/adf-content-services';
 import { RuleContext } from '@alfresco/adf-extensions';
 import { Node } from '@alfresco/js-api';
-import { from, map } from 'rxjs';
 
-import { OnlyofficeApi } from '../api/onlyoffice.api';
+import { getOnlyofficeAlfrescoExtensionSettings } from '../configuration/onlyoffice-alfrsco-extension.config';
 
 const ASPECT_WORKING_COPY = 'cm:workingcopy';
 const ASPECT_EDITING_IN_ONLYOFFICE_DOCS = 'od:editingInOnlyofficeDocs';
-
-export interface Format {
-  name: string;
-  type: string;
-  actions: string[];
-  convert: string[];
-  mime: string[];
-}
-
-let settings:
-  | {
-      convertOriginal: boolean;
-      editableFormats: Record<string, boolean>;
-      supportedFormats?: Format[];
-    }
-  | undefined;
-
-export const onlyofficeAlfrescoExtensionLoader = () => {
-  if (settings && Object.keys(settings).length > 0) {
-    return from(Promise.resolve(true));
-  }
-
-  const apiService = inject(AlfrescoApiService);
-  const onlyofficeApi = new OnlyofficeApi(apiService.getInstance().contentPrivateClient);
-
-  return from(onlyofficeApi.getSettings()).pipe(
-    map((response: any) => {
-      settings = response;
-
-      return true;
-    })
-  );
-};
 
 export const displayViewAction = (context: RuleContext): boolean => {
   const node = context.selection.first?.entry;
@@ -109,6 +72,7 @@ export const displayConvertAction = (context: RuleContext): boolean => {
 
 const _isViewable = (node: Node): boolean => {
   const fileName = node.name;
+  const settings = getOnlyofficeAlfrescoExtensionSettings();
 
   if (fileName != null && settings?.supportedFormats) {
     const fileExtension = fileName.split('.').pop()?.toLowerCase();
@@ -123,6 +87,7 @@ const _isViewable = (node: Node): boolean => {
 
 const _isEditable = (node: Node): boolean => {
   const fileName = node.name;
+  const settings = getOnlyofficeAlfrescoExtensionSettings();
 
   if (fileName != null && settings?.supportedFormats) {
     const fileExtension = fileName.split('.').pop()?.toLowerCase();
@@ -135,6 +100,7 @@ const _isEditable = (node: Node): boolean => {
 
 const _isConvertible = (node: Node): boolean => {
   const fileName = node.name;
+  const settings = getOnlyofficeAlfrescoExtensionSettings();
 
   if (fileName != null && settings?.supportedFormats) {
     const fileExtension = fileName.split('.').pop()?.toLowerCase();
@@ -161,6 +127,8 @@ const _isConvertible = (node: Node): boolean => {
 };
 
 const _hasConvertPermission = (context: RuleContext, node: Node) => {
+  const settings = getOnlyofficeAlfrescoExtensionSettings();
+
   if (settings?.convertOriginal) {
     return _hasPermissions(context, node, ['update']);
   } else {
@@ -179,6 +147,7 @@ const _hasPermissions = (context: RuleContext, node: Node, permissions: string[]
 };
 
 const _getEditableFormats = (): string[] => {
+  const settings = getOnlyofficeAlfrescoExtensionSettings();
   const editableFormats: string[] = [];
 
   if (settings?.supportedFormats) {
