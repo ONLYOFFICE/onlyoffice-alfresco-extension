@@ -19,7 +19,7 @@
 
 import { inject } from '@angular/core';
 
-import { AcaRuleContext, canCreateFolder, hasLockedFiles, isTrashcan } from '@alfresco/aca-shared/rules';
+import { AcaRuleContext, canCreateFolder, hasFileSelected, hasLockedFiles, isTrashcan } from '@alfresco/aca-shared/rules';
 import { AlfrescoApiService } from '@alfresco/adf-content-services';
 import { RuleContext } from '@alfresco/adf-extensions';
 import { Node } from '@alfresco/js-api';
@@ -70,7 +70,7 @@ export const displayViewAction = (context: RuleContext): boolean => {
     return false;
   }
 
-  return _isViewable(node) && !displayEditAction(context) && !isTrashcan(context);
+  return hasFileSelected(context) && _isViewable(node) && !displayEditAction(context) && !isTrashcan(context);
 };
 
 export const displayEditAction = (context: RuleContext): boolean => {
@@ -81,6 +81,7 @@ export const displayEditAction = (context: RuleContext): boolean => {
   }
 
   return (
+    hasFileSelected(context) &&
     _isEditable(node) &&
     _hasPermissions(context, node, ['update']) &&
     !_hasAspect(node, ASPECT_WORKING_COPY) &&
@@ -97,6 +98,7 @@ export const displayConvertAction = (context: RuleContext): boolean => {
   }
 
   return (
+    hasFileSelected(context) &&
     _isConvertible(node) &&
     _hasConvertPermission(context, node) &&
     !_hasAspect(node, ASPECT_WORKING_COPY) &&
