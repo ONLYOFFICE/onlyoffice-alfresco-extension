@@ -28,6 +28,15 @@
           "SUCCESS": "{{name}} was successfully converted",
           "ERROR": "Could not convert {{name}}"
         }
+      },
+      "DOWNLOAD_AS": {
+        "TITLE": "Download as...",
+        "TABLE": {
+          "COLUMNS": {
+            "NAME": "Name",
+            "OUTPUT_TYPE": "Output Type"
+          }
+        }
       }
     },
     "BUTTONS": {
@@ -36,7 +45,10 @@
       "CONVERT_IN_ONLYOFFICE": "Convert using ONLYOFFICE",
       "CREATE_IN_ONLYOFFICE": "Create with ONLYOFFICE",
       "CANCEL": "Cancel",
-      "CREATE": "Create"
+      "CREATE": "Create",
+      "DOWNLOAD_AS": "Download as",
+      "DOWNLOAD": "Download",
+      "REMOVE": "Remove"
     }
   }
 }

@@ -60,3 +60,25 @@ export const onlyofficeAlfrescoExtensionLoader = () => {
 export const getOnlyofficeAlfrescoExtensionSettings = () => {
   return settings;
 };
+
+export const getConvertExtensions = (sourceExtension: string, includeSource = false): string[] => {
+  let convertExtensions: string[] = [];
+  const currentSettings = getOnlyofficeAlfrescoExtensionSettings();
+  const supportedFormats = currentSettings?.supportedFormats;
+
+  if (supportedFormats) {
+    for (const format of supportedFormats) {
+      if (format.name === sourceExtension) {
+        convertExtensions = format.convert ? format.convert : [];
+      }
+    }
+
+    if (convertExtensions.length > 0 && !includeSource) {
+      if (convertExtensions.includes(sourceExtension)) {
+        convertExtensions.splice(convertExtensions.indexOf(sourceExtension), 1);
+      }
+    }
+  }
+
+  return convertExtensions;
+};

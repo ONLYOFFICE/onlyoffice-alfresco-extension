@@ -67,4 +67,8 @@ export class OnlyofficeApi extends WebscriptApi {
       }
     );
   }
+
+  downloadAs(items: { nodeRef: string; outputType: string }[]) {
+    return this.executeWebScript('POST', 'parashift/onlyoffice/download-as', {}, 'alfresco', 'service', items);
+  }
 }

@@ -27,7 +27,7 @@ import { provideEffects } from '@ngrx/effects';
 import { EditorComponent } from './components/editor/editor.component';
 import { onlyofficeAlfrescoExtensionLoader } from './configuration/onlyoffice-alfrsco-extension.config';
 import { OnlyofficeAlfrescoExtensionEffects } from './effects/onlyoffice-alfresco-extension.effects';
-import { displayConvertAction, displayEditAction, displayViewAction } from './rules/onlyoffice-alfresco-extension.rules';
+import { displayConvertAction, displayDownloadAsAction, displayEditAction, displayViewAction } from './rules/onlyoffice-alfresco-extension.rules';
 
 export function provideOnlyofficeAlfrescoExtension(): (Provider | EnvironmentProviders)[] {
   return [
@@ -39,7 +39,8 @@ export function provideOnlyofficeAlfrescoExtension(): (Provider | EnvironmentPro
       evaluators: {
         'onlyoffice-alfresco-extension.rules.displayViewAction': displayViewAction,
         'onlyoffice-alfresco-extension.rules.displayEditAction': displayEditAction,
-        'onlyoffice-alfresco-extension.rules.displayConvertAction': displayConvertAction
+        'onlyoffice-alfresco-extension.rules.displayConvertAction': displayConvertAction,
+        'onlyoffice-alfresco-extension.rules.displayDownloadAsAction': displayDownloadAsAction
       }
     }),
     provideEffects([OnlyofficeAlfrescoExtensionEffects]),

@@ -17,7 +17,8 @@
     "@angular/platform-browser": "19.2.6",
     "@ngx-translate/core": "^16.0.4",
     "@angular/forms": "19.2.6",
-    "@ngrx/effects": "19.2.1"
+    "@ngrx/effects": "19.2.1",
+    "@alfresco/aca-content": "0.0.1"
   },
   "sideEffects": false
 }

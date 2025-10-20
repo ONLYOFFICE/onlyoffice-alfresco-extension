@@ -1,0 +1,30 @@
+/* stylelint-disable selector-class-pattern */
+
+@import '../../styles/common.scss';
+@import '../../styles/dialog.scss';
+
+.onlyoffice-alfresco-extension-dialog {
+  .onlyoffice-alfresco-extension-dialog {
+    &-content {
+      margin: 0;
+      overflow: hidden;
+      flex-grow: 1;
+      height: 80vh;
+    }
+  }
+}
+
+.onlyoffice-alfresco-extension-data-table {
+  overflow: hidden;
+
+  .onlyoffice-alfresco-extension-data-table {
+    &-select {
+      width: 100%;
+      height: 40px;
+    }
+  }
+
+  .onlyoffice-alfresco-extension-data-table-select.mat-mdc-form-field .mat-mdc-form-field-infix:not(:disabled) {
+    padding-top: 8px;
+  }
+}

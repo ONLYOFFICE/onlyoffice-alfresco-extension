@@ -1,0 +1,105 @@
+<div class="onlyoffice-alfresco-extension-dialog">
+  <h1 mat-dialog-title>{{ 'ONLYOFFICE_ALFRESCO_EXTENSION.PAGES.DOWNLOAD_AS.TITLE' | translate }}</h1>
+
+  <mat-dialog-content class="onlyoffice-alfresco-extension-dialog-content">
+    <adf-datatable
+      class="onlyoffice-alfresco-extension-data-table"
+      [data]="dataTable"
+      [columns]="schemaTable"
+      selectionMode="none"
+      [stickyHeader]="true"
+      [loading]="showSpinner"
+    >
+      <data-columns>
+        <data-column
+          key="outputType"
+          [sortable]="false"
+          class="adf-ellipsis-cell adf-expand-cell-2"
+        >
+          <ng-template let-entry="$implicit">
+            <mat-form-field
+              subscriptSizing="dynamic"
+              class="onlyoffice-alfresco-extension-data-table-select"
+            >
+              <mat-select
+                (click)="$event.stopPropagation()"
+                [value]="entry.data.getValue(entry.row, entry.col).value"
+                (selectionChange)="onChangeOutputType($event.value, entry.row.obj)"
+                (keyup.arrowdown)="$event.stopPropagation()"
+                (keyup.arrowup)="$event.stopPropagation()"
+              >
+                <mat-option
+                  *ngFor="let outputTypeOption of entry.data.getValue(entry.row, entry.col).options" [value]="outputTypeOption"
+                >
+                  {{ outputTypeOption }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </ng-template>
+
+          <adf-data-column-header>
+            <ng-template>
+              <mat-form-field
+                subscriptSizing="dynamic"
+                class="onlyoffice-alfresco-extension-data-table-select"
+              >
+              <mat-select
+                [placeholder]="'ONLYOFFICE_ALFRESCO_EXTENSION.PAGES.DOWNLOAD_AS.TABLE.COLUMNS.OUTPUT_TYPE' | translate"
+                (click)="$event.stopPropagation()"
+                (selectionChange)="onChangeAllOutputTypes($event.value)"
+                (keyup.arrowdown)="$event.stopPropagation()"
+                (keyup.arrowup)="$event.stopPropagation()"
+              >
+                <mat-option
+                  *ngFor="let outputTypeOption of commonOutputTypeOptions" [value]="outputTypeOption"
+                >
+                  {{ outputTypeOption }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            </ng-template>
+          </adf-data-column-header>
+        </data-column>
+
+        <data-column
+          key=""
+          [sortable]="false">
+            <ng-template let-entry="$implicit">
+              <button mat-icon-button
+                (click)="removeFile(entry.row.getValue('id'))"
+                [attr.aria-label]="'ONLYOFFICE_ALFRESCO_EXTENSION.BUTTONS.REMOVE' | translate"
+                [attr.title]="'ONLYOFFICE_ALFRESCO_EXTENSION.BUTTONS.REMOVE' | translate"
+              >
+                  <mat-icon>highlight_off</mat-icon>
+              </button>
+          </ng-template>
+        </data-column>
+      </data-columns>
+
+      <adf-loading-content-template>
+        <ng-template>
+            <mat-progress-spinner
+                
+                class="adf-process-list-loading-margin"
+                color="primary"
+                mode="indeterminate" />
+            <ng-content select="adf-custom-loading-content-template" />
+        </ng-template>
+    </adf-loading-content-template>
+    </adf-datatable>
+  </mat-dialog-content>
+
+  <mat-dialog-actions class="onlyoffice-alfresco-extension-dialog-footer">
+    <button mat-button mat-dialog-close>
+      {{ 'ONLYOFFICE_ALFRESCO_EXTENSION.BUTTONS.CANCEL' | translate }}
+    </button>
+
+    <button
+      mat-button
+      class="onlyoffice-alfresco-extension-dialog-action-button"
+      (click)="onSubmit()"
+    >
+      {{ 'ONLYOFFICE_ALFRESCO_EXTENSION.BUTTONS.DOWNLOAD' | translate }}
+    </button>
+  </mat-dialog-actions>
+</div>

@@ -33,11 +33,13 @@ import {
   OnlyofficeAlfrescoExtensionActionTypes,
   OpenConvertFileDialog,
   OpenCreateFileDialog,
+  OpenDownloadAsDialog,
   OpenRoute
 } from '../actions/onlyoffice-alfresco-extension.actions';
 import { OnlyofficeApi } from '../api/onlyoffice.api';
 import { ConvertFileDialogComponent } from '../dialogs/convert/convert-file.dialog';
 import { CreateFileDialogComponent } from '../dialogs/create/create-file.dialog';
+import { DownloadAsDialogComponent } from '../dialogs/download-as/download-as.dialog';
 import { UrlService } from '../services/url.service';
 import { getNodeId } from '../utils/utils';
 
@@ -137,6 +139,28 @@ export class OnlyofficeAlfrescoExtensionEffects {
                     nodeId: this.getNodeId(selection.first?.entry),
                     name: selection.first?.entry.name
                   }
+                })
+                .afterClosed()
+                .subscribe(() => this.focusAfterClose(action.configuration?.focusedElementOnCloseSelector));
+            });
+        })
+      ),
+    { dispatch: false }
+  );
+
+  openDownloadAsDialog$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType<OpenDownloadAsDialog>(OnlyofficeAlfrescoExtensionActionTypes.OpenDownloadAsDialog),
+        map((action) => {
+          this.store
+            .select(getAppSelection)
+            .pipe(take(1))
+            .subscribe((selection) => {
+              this.dialog
+                .open(DownloadAsDialogComponent, {
+                  width: '800px',
+                  data: selection.nodes
                 })
                 .afterClosed()
                 .subscribe(() => this.focusAfterClose(action.configuration?.focusedElementOnCloseSelector));

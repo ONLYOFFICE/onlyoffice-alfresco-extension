@@ -75,6 +75,18 @@
             "rules": {
               "visible": "onlyoffice-alfresco-extension.rules.displayConvertAction"
             }
+          },
+          {
+            "id": "onlyoffice-docs-adf-extension:toolbar:app.toolbar.more:download-as-item",
+            "order": 599,
+            "icon": "get_app",
+            "title": "ONLYOFFICE_ALFRESCO_EXTENSION.BUTTONS.DOWNLOAD_AS",
+            "actions": {
+              "click": "ONLYOFFICE_ALFRESCO_EXTENSION_OPEN_DOWNLOAD_AS_DIALOG"
+            },
+            "rules": {
+              "visible": "onlyoffice-alfresco-extension.rules.displayDownloadAsAction"
+            }
           }
         ]
       }
@@ -114,6 +126,18 @@
         },
         "rules": {
           "visible": "onlyoffice-alfresco-extension.rules.displayConvertAction"
+        }
+      },
+      {
+        "id": "onlyoffice-docs-adf-extension:toolbar:app.toolbar.more:download-as-item",
+        "order": 999,
+        "icon": "get_app",
+        "title": "ONLYOFFICE_ALFRESCO_EXTENSION.BUTTONS.DOWNLOAD_AS",
+        "actions": {
+          "click": "ONLYOFFICE_ALFRESCO_EXTENSION_OPEN_DOWNLOAD_AS_DIALOG"
+        },
+        "rules": {
+          "visible": "onlyoffice-alfresco-extension.rules.displayDownloadAsAction"
         }
       }
     ],
@@ -156,6 +180,18 @@
               },
               "rules": {
                 "visible": "onlyoffice-alfresco-extension.rules.displayConvertAction"
+              }
+            },
+            {
+              "id": "onlyoffice-docs-adf-extension:toolbar:app.toolbar.more:download-as-item",
+              "order": 499,
+              "icon": "get_app",
+              "title": "ONLYOFFICE_ALFRESCO_EXTENSION.BUTTONS.DOWNLOAD_AS",
+              "actions": {
+                "click": "ONLYOFFICE_ALFRESCO_EXTENSION_OPEN_DOWNLOAD_AS_DIALOG"
+              },
+              "rules": {
+                "visible": "onlyoffice-alfresco-extension.rules.displayDownloadAsAction"
               }
             }
           ]

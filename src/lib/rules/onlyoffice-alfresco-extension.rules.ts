@@ -21,7 +21,7 @@ import { AcaRuleContext, canCreateFolder, hasFileSelected, hasLockedFiles, isTra
 import { RuleContext } from '@alfresco/adf-extensions';
 import { Node } from '@alfresco/js-api';
 
-import { getOnlyofficeAlfrescoExtensionSettings } from '../configuration/onlyoffice-alfrsco-extension.config';
+import { getConvertExtensions, getOnlyofficeAlfrescoExtensionSettings } from '../configuration/onlyoffice-alfrsco-extension.config';
 
 const ASPECT_WORKING_COPY = 'cm:workingcopy';
 const ASPECT_EDITING_IN_ONLYOFFICE_DOCS = 'od:editingInOnlyofficeDocs';
@@ -68,6 +68,31 @@ export const displayConvertAction = (context: RuleContext): boolean => {
     !hasLockedFiles(context) &&
     !isTrashcan(context)
   );
+};
+
+export const displayDownloadAsAction = (context: RuleContext) => {
+  if (isTrashcan(context)) {
+    return false;
+  }
+
+  let hasSupportedFiles = false;
+
+  context.selection.nodes.forEach((nodeEntry) => {
+    const isFile = nodeEntry.entry.isFile;
+
+    if (isFile) {
+      const name = nodeEntry.entry.name;
+      const extension = name.split('.').pop()?.toLowerCase();
+      const outputTypes = getConvertExtensions(extension || '');
+
+      if (outputTypes.length > 0) {
+        hasSupportedFiles = true;
+        return;
+      }
+    }
+  });
+
+  return hasSupportedFiles;
 };
 
 const _isViewable = (node: Node): boolean => {

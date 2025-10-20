@@ -24,6 +24,7 @@ export enum OnlyofficeAlfrescoExtensionActionTypes {
   OpenRoute = 'ONLYOFFICE_ALFRESCO_EXTENSION_OPEN_ROUTE',
   OpenCreateFileDialog = 'ONLYOFFICE_ALFRESCO_EXTENSION_OPEN_CREATE_FILE_DIALOG',
   OpenConvertFileDialog = 'ONLYOFFICE_ALFRESCO_EXTENSION_OPEN_CONVERT_FILE_DIALOG',
+  OpenDownloadAsDialog = 'ONLYOFFICE_ALFRESCO_EXTENSION_OPEN_DOWNLOAD_AS_DIALOG',
   CreateFile = 'ONLYOFFICE_ALFRESCO_EXTENSION_CREATE_FILE',
   ConvertFile = 'ONLYOFFICE_ALFRESCO_EXTENSION_CONVERT_FILE'
 }
@@ -40,6 +41,12 @@ export class OpenCreateFileDialog implements Action {
 
 export class OpenConvertFileDialog implements Action {
   readonly type = OnlyofficeAlfrescoExtensionActionTypes.OpenConvertFileDialog;
+
+  constructor(public configuration?: ModalConfiguration) {}
+}
+
+export class OpenDownloadAsDialog implements Action {
+  readonly type = OnlyofficeAlfrescoExtensionActionTypes.OpenDownloadAsDialog;
 
   constructor(public configuration?: ModalConfiguration) {}
 }
