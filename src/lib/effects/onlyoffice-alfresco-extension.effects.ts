@@ -34,12 +34,14 @@ import {
   OpenConvertFileDialog,
   OpenCreateFileDialog,
   OpenDownloadAsDialog,
-  OpenRoute
+  OpenRoute,
+  OpenSaveAsDialog
 } from '../actions/onlyoffice-alfresco-extension.actions';
 import { OnlyofficeApi } from '../api/onlyoffice.api';
 import { ConvertFileDialogComponent } from '../dialogs/convert/convert-file.dialog';
 import { CreateFileDialogComponent } from '../dialogs/create/create-file.dialog';
 import { DownloadAsDialogComponent } from '../dialogs/download-as/download-as.dialog';
+import { SaveAsDialogComponent } from '../dialogs/save-as/save-as.dialog';
 import { UrlService } from '../services/url.service';
 import { getNodeId } from '../utils/utils';
 
@@ -165,6 +167,23 @@ export class OnlyofficeAlfrescoExtensionEffects {
                 .afterClosed()
                 .subscribe(() => this.focusAfterClose(action.configuration?.focusedElementOnCloseSelector));
             });
+        })
+      ),
+    { dispatch: false }
+  );
+
+  openSaveAsDialog$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType<OpenSaveAsDialog>(OnlyofficeAlfrescoExtensionActionTypes.OpenSaveAsDialog),
+        map((action) => {
+          this.dialog
+            .open(SaveAsDialogComponent, {
+              width: '630px',
+              data: action.payload
+            })
+            .afterClosed()
+            .subscribe(() => this.focusAfterClose(action.configuration?.focusedElementOnCloseSelector));
         })
       ),
     { dispatch: false }

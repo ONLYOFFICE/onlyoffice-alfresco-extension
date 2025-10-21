@@ -1,0 +1,59 @@
+<div class="onlyoffice-alfresco-extension-dialog">
+  <h2 mat-dialog-title>{{ 'ONLYOFFICE_ALFRESCO_EXTENSION.PAGES.SAVE_AS.TITLE' | translate }}</h2>
+
+  <mat-dialog-content class="onlyoffice-alfresco-extension-dialog-content">
+    <form [formGroup]="form" novalidate>
+      <mat-form-field class="full-width">
+        <mat-label>{{ 'NODE_FROM_TEMPLATE.FORM.PLACEHOLDER.NAME' | translate }}</mat-label>
+        <input
+          cdkFocusInitial
+          matInput
+          formControlName="name"
+          required
+        />
+
+        <mat-error *ngIf="form.controls['name'].errors?.message">
+          {{ form.controls['name'].errors?.message | translate }}
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field class="full-width">
+        <mat-label>{{ 'NODE_FROM_TEMPLATE.FORM.PLACEHOLDER.NAME' | translate }}</mat-label>
+        <input
+          matInput
+          formControlName="destinationFolderId"
+          required
+          (input)="onInputDestinationFolder()"
+          (keyup.enter)="onClickDestinationFolder()"
+          (click)="onClickDestinationFolder()"
+        />
+        <button
+          mat-icon-button
+          matSuffix
+          [attr.title]="'CORE.METADATA.ACTIONS.EDIT' | translate"
+        >
+          <mat-icon class="adf-textitem-icon">folder</mat-icon>
+        </button>
+
+        <mat-error *ngIf="form.controls['destinationFolderId'].errors?.message">
+          {{ form.controls['destinationFolderId'].errors?.message | translate }}
+        </mat-error>
+      </mat-form-field>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions class="onlyoffice-alfresco-extension-dialog-footer">
+    <button mat-button mat-dialog-close>
+      {{ 'ONLYOFFICE_ALFRESCO_EXTENSION.BUTTONS.CANCEL' | translate }}
+    </button>
+
+    <button
+      mat-button
+      class="onlyoffice-alfresco-extension-dialog-action-button"
+      [disabled]="form.invalid"
+      (click)="onSubmit()"
+    >
+      {{ 'ONLYOFFICE_ALFRESCO_EXTENSION.BUTTONS.SAVE' | translate }}
+    </button>
+  </mat-dialog-actions>
+</div>

@@ -32,7 +32,7 @@ import { FavoritesApi, Node, NodeEntry, NodesApi } from '@alfresco/js-api';
 import { Store } from '@ngrx/store';
 import { DocumentEditorModule, IConfig } from '@onlyoffice/document-editor-angular';
 
-import { CreateFile } from '../../actions/onlyoffice-alfresco-extension.actions';
+import { CreateFile, OpenSaveAsDialog } from '../../actions/onlyoffice-alfresco-extension.actions';
 import { OnlyofficeApi } from '../../api/onlyoffice.api';
 import { PermissionsDialogComponent } from '../../dialogs/permissions/permissions.dialog';
 import { FaviconService } from '../../services/favicon.service';
@@ -148,6 +148,7 @@ export class EditorComponent implements OnInit {
             onRequestCompareFile: this.onRequestCompareFile,
             onRequestReferenceData: this.onRequestReferenceData,
             onRequestReferenceSource: this.onRequestReferenceSource,
+            onRequestSaveAs: this.onRequestSaveAs,
             onRequestSharingSettings: config.canManagePermissions ? this.onRequestSharingSettings : undefined
           };
         })
@@ -454,7 +455,20 @@ export class EditorComponent implements OnInit {
     }
   };
 
-  onRequestSaveAs = () => {};
+  onRequestSaveAs = (event: { data: any }) => {
+    const { data } = event;
+    const { title, url } = data;
+
+    if (this.node) {
+      this.store.dispatch(
+        new OpenSaveAsDialog({
+          nodeEntry: this.node,
+          title,
+          url
+        })
+      );
+    }
+  };
 
   onRequestClose = () => {
     if (this.node) {

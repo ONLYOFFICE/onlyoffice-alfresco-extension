@@ -71,4 +71,8 @@ export class OnlyofficeApi extends WebscriptApi {
   downloadAs(items: { nodeRef: string; outputType: string }[]) {
     return this.executeWebScript('POST', 'parashift/onlyoffice/download-as', {}, 'alfresco', 'service', items);
   }
+
+  saveAs(data: { title: string; ext: string; url: string; saveNode: string }) {
+    return this.executeWebScript('POST', 'parashift/onlyoffice/editor-api/save-as', {}, 'alfresco', 'service', data);
+  }
 }

@@ -18,6 +18,7 @@
  */
 
 import { ModalConfiguration } from '@alfresco/aca-shared/store';
+import { NodeEntry } from '@alfresco/js-api';
 import { Action } from '@ngrx/store';
 
 export enum OnlyofficeAlfrescoExtensionActionTypes {
@@ -25,6 +26,7 @@ export enum OnlyofficeAlfrescoExtensionActionTypes {
   OpenCreateFileDialog = 'ONLYOFFICE_ALFRESCO_EXTENSION_OPEN_CREATE_FILE_DIALOG',
   OpenConvertFileDialog = 'ONLYOFFICE_ALFRESCO_EXTENSION_OPEN_CONVERT_FILE_DIALOG',
   OpenDownloadAsDialog = 'ONLYOFFICE_ALFRESCO_EXTENSION_OPEN_DOWNLOAD_AS_DIALOG',
+  OpenSaveAsDialog = 'ONLYOFFICE_ALFRESCO_EXTENSION_OPEN_SAVE_AS_DIALOG',
   CreateFile = 'ONLYOFFICE_ALFRESCO_EXTENSION_CREATE_FILE',
   ConvertFile = 'ONLYOFFICE_ALFRESCO_EXTENSION_CONVERT_FILE'
 }
@@ -49,6 +51,19 @@ export class OpenDownloadAsDialog implements Action {
   readonly type = OnlyofficeAlfrescoExtensionActionTypes.OpenDownloadAsDialog;
 
   constructor(public configuration?: ModalConfiguration) {}
+}
+
+export class OpenSaveAsDialog implements Action {
+  readonly type = OnlyofficeAlfrescoExtensionActionTypes.OpenSaveAsDialog;
+
+  constructor(
+    public payload: {
+      nodeEntry: NodeEntry;
+      title?: string;
+      url?: string;
+    },
+    public configuration?: ModalConfiguration
+  ) {}
 }
 
 export class CreateFile implements Action {

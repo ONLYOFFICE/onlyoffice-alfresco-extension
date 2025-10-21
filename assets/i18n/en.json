@@ -37,6 +37,12 @@
             "OUTPUT_TYPE": "Output Type"
           }
         }
+      },
+      "SAVE_AS": {
+        "TITLE": "Save Copy As",
+        "MESSAGES": {
+          "SUCCESS": "Document was successfully saved"
+        }
       }
     },
     "BUTTONS": {
@@ -48,7 +54,8 @@
       "CREATE": "Create",
       "DOWNLOAD_AS": "Download as",
       "DOWNLOAD": "Download",
-      "REMOVE": "Remove"
+      "REMOVE": "Remove",
+      "SAVE": "Save"
     }
   }
 }
