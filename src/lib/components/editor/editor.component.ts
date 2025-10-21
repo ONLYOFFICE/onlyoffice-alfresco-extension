@@ -26,7 +26,7 @@ import { ActivatedRoute, Params } from '@angular/router';
 
 import { GenericErrorComponent } from '@alfresco/aca-shared';
 import { AppStore, NavigateToParentFolder } from '@alfresco/aca-shared/store';
-import { AlfrescoApiService, NodeAction, ShareDataRow } from '@alfresco/adf-content-services';
+import { AlfrescoApiService } from '@alfresco/adf-content-services';
 import { LocalizedDatePipe, NotificationService, TranslationService } from '@alfresco/adf-core';
 import { FavoritesApi, Node, NodeEntry, NodesApi } from '@alfresco/js-api';
 import { Store } from '@ngrx/store';
@@ -36,7 +36,7 @@ import { CreateFile } from '../../actions/onlyoffice-alfresco-extension.actions'
 import { OnlyofficeApi } from '../../api/onlyoffice.api';
 import { PermissionsDialogComponent } from '../../dialogs/permissions/permissions.dialog';
 import { FaviconService } from '../../services/favicon.service';
-import { NodeSelectorService } from '../../services/node-selector.service';
+import { NodeSelectorService, SelectorType } from '../../services/node-selector.service';
 import { UrlService } from '../../services/url.service';
 import { getNodeId } from '../../utils/utils';
 
@@ -296,7 +296,7 @@ export class EditorComponent implements OnInit {
 
   onRequestInsertImage = (event: { data: { c: string } }) => {
     if (this.node) {
-      const select = this.nodeSelectorService.getContentNodeSelection(NodeAction.CHOOSE, this.node);
+      const select = this.nodeSelectorService.getContentNodeSelection(SelectorType.INSERT_IMAGE, this.node);
 
       const command = event.data.c;
 
@@ -321,7 +321,7 @@ export class EditorComponent implements OnInit {
 
   onRequestMailMergeRecipients = () => {
     if (this.node) {
-      const select = this.nodeSelectorService.getContentNodeSelection(NodeAction.CHOOSE, this.node);
+      const select = this.nodeSelectorService.getContentNodeSelection(SelectorType.MAIL_MERGE, this.node);
 
       select.subscribe((nodes: Node[]) => {
         const items = nodes.map((node) => {
@@ -344,7 +344,7 @@ export class EditorComponent implements OnInit {
 
   onRequestCompareFile = () => {
     if (this.node) {
-      const select = this.nodeSelectorService.getContentNodeSelection(NodeAction.CHOOSE, this.node);
+      const select = this.nodeSelectorService.getContentNodeSelection(SelectorType.COMPARE_FILE, this.node);
 
       select.subscribe((nodes: Node[]) => {
         const items = nodes.map((node) => {
@@ -405,18 +405,7 @@ export class EditorComponent implements OnInit {
 
   onRequestReferenceSource = () => {
     if (this.node) {
-      const select = this.nodeSelectorService.getContentNodeSelection(NodeAction.CHOOSE, this.node, (row: ShareDataRow) => {
-        const node = row.node.entry;
-
-        if (node.isFile) {
-          const fileName = node.name;
-          const fileExtension = fileName.split('.').pop()?.toLowerCase();
-
-          return 'xlsx' === fileExtension;
-        } else {
-          return true;
-        }
-      });
+      const select = this.nodeSelectorService.getContentNodeSelection(SelectorType.REFERENCE_SOURCE, this.node);
 
       select.subscribe((nodes: Node[]) => {
         const items = nodes.map((node) => {

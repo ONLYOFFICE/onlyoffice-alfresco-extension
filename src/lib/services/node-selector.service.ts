@@ -24,12 +24,21 @@ import {
   ContentNodeDialogService,
   ContentNodeSelectorComponent,
   ContentNodeSelectorComponentData,
+  ContentService,
   NodeAction,
   ShareDataRow
 } from '@alfresco/adf-content-services';
-import { TranslationService } from '@alfresco/adf-core';
+import { ThumbnailService, TranslationService } from '@alfresco/adf-core';
 import { Node, NodeEntry, Site, SitePaging, SitePagingList } from '@alfresco/js-api';
 import { Subject } from 'rxjs';
+
+export enum SelectorType {
+  FOLDER = 'FOLDER',
+  INSERT_IMAGE = 'INSERT_IMAGE',
+  MAIL_MERGE = 'MAIL_MERGE',
+  COMPARE_FILE = 'COMPARE_FILE',
+  REFERENCE_SOURCE = 'REFERENCE_SOURCE'
+}
 
 @Injectable({
   providedIn: 'root'
@@ -37,10 +46,12 @@ import { Subject } from 'rxjs';
 export class NodeSelectorService {
   constructor(
     private dialog: MatDialog,
-    private translation: TranslationService
+    private translation: TranslationService,
+    private contentService: ContentService,
+    private thumbnailService: ThumbnailService
   ) {}
 
-  getContentNodeSelection(action: NodeAction, node: NodeEntry, rowFilter?: (row: ShareDataRow) => boolean): Subject<Node[]> {
+  getContentNodeSelection(action: SelectorType, node: NodeEntry): Subject<Node[]> {
     const currentParentFolderId = this.getEntryParentId(node.entry);
 
     const customDropdown = new SitePaging({
@@ -62,18 +73,19 @@ export class NodeSelectorService {
       } as SitePagingList
     });
 
-    const title = this.getTitleTranslation(action, node);
+    const title = this.getTitleTranslation();
 
     const data: ContentNodeSelectorComponentData = {
       title,
-      actionName: action,
+      actionName: NodeAction.CHOOSE,
       currentFolderId: currentParentFolderId,
       dropdownHideMyFiles: true,
       dropdownSiteList: customDropdown,
       selectionMode: 'single',
-      rowFilter: rowFilter ? rowFilter : null,
+      rowFilter: this.getRowFilter(action),
+      imageResolver: this.getImageResolver(action),
       breadcrumbTransform: this.customizeBreadcrumb.bind(this),
-      isSelectionValid: this.isSelectionValid.bind(this),
+      isSelectionValid: this.getSelectionValidator(action),
       excludeSiteContent: ContentNodeDialogService.nonDocumentSiteContent,
       select: new Subject<Node[]>()
     };
@@ -104,22 +116,37 @@ export class NodeSelectorService {
     return entryParentId;
   }
 
-  getTitleTranslation(action: string, node: NodeEntry): string {
-    const name = node.entry.name;
-
-    return this.translation.instant(`NODE_SELECTOR.${action}_ITEM`, { name });
+  getTitleTranslation(): string {
+    return this.translation.instant(`NODE_SELECTOR.CHOOSE_ITEM`, { name: this.translation.instant('APP.BROWSE.PERSONAL.SIDENAV_LINK.LABEL') });
   }
 
   close() {
     this.dialog.closeAll();
   }
 
+  private getSelectionValidator(type: SelectorType) {
+    switch (type) {
+      case SelectorType.FOLDER:
+        return this.folderSelectionValidator.bind(this);
+      default:
+        return this.fileSelectionValidator.bind(this);
+    }
+  }
+
+  private folderSelectionValidator(entry: Node): boolean {
+    return this.hasEntityCreatePermission(entry);
+  }
+
+  private fileSelectionValidator(entry: Node): boolean {
+    return !this.isSite(entry) && !entry.isFolder;
+  }
+
   private isSite(entry: any) {
     return !!entry['guid'] || entry.nodeType === 'st:site' || entry.nodeType === 'st:sites';
   }
 
-  private isSelectionValid(entry: Node): boolean {
-    return !this.isSite(entry) && !entry.isFolder;
+  private hasEntityCreatePermission(entry: Node): boolean {
+    return this.contentService.hasAllowableOperations(entry, 'create');
   }
 
   private customizeBreadcrumb(node: Node) {
@@ -156,11 +183,52 @@ export class NodeSelectorService {
     return node;
   }
 
-  isSiteContainer(node: Node): boolean {
-    if (node?.aspectNames?.length > 0) {
-      return node.aspectNames.indexOf('st:siteContainer') >= 0;
+  private getRowFilter(type: SelectorType) {
+    switch (type) {
+      case SelectorType.FOLDER:
+        return this.folderRowFilter;
+      case SelectorType.REFERENCE_SOURCE:
+        return this.referenceSourceRowFilter;
+      default:
+        return null;
     }
-    return false;
+  }
+
+  private folderRowFilter(row: ShareDataRow): boolean {
+    const node: Node = row.node.entry;
+
+    return !node.isFile && node.nodeType !== 'app:folderlink';
+  }
+
+  private referenceSourceRowFilter(row: ShareDataRow): boolean {
+    const node = row.node.entry;
+
+    if (node.isFile) {
+      const fileName = node.name;
+      const fileExtension = fileName.split('.').pop()?.toLowerCase();
+
+      return 'xlsx' === fileExtension;
+    } else {
+      return true;
+    }
+  }
+
+  private getImageResolver(type: SelectorType) {
+    switch (type) {
+      case SelectorType.FOLDER:
+        return this.folderImageResolver.bind(this);
+      default:
+        return null;
+    }
+  }
+
+  private folderImageResolver(row: ShareDataRow): string | null {
+    const entry: Node = row.node.entry;
+    if (!this.hasEntityCreatePermission(entry)) {
+      return this.thumbnailService.getMimeTypeIcon('disable/folder');
+    }
+
+    return null;
   }
 
   private normalizeSitePath(node: Node) {
@@ -187,5 +255,12 @@ export class NodeSelectorService {
         elements.splice(docLib, 1);
       }
     }
+  }
+
+  private isSiteContainer(node: Node): boolean {
+    if (node?.aspectNames?.length > 0) {
+      return node.aspectNames.indexOf('st:siteContainer') >= 0;
+    }
+    return false;
   }
 }
