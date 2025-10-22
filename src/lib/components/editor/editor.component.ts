@@ -142,6 +142,9 @@ export class EditorComponent implements OnInit, OnDestroy {
           }
 
           this._removeTemplates(this.config);
+          if (this.config.editorConfig) {
+            this.config.editorConfig.lang = this.translationService.userLang;
+          }
 
           this.config.events = {
             onAppReady: this.onAppReady,
