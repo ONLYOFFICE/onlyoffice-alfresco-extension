@@ -30,6 +30,10 @@ export class FaviconService {
     document.head.appendChild(this.link);
   }
 
+  getFavicon(): string {
+    return this.link.href;
+  }
+
   setFavicon(url: string): void {
     this.link.href = url;
   }

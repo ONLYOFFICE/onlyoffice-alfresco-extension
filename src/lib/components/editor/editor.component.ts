@@ -18,7 +18,7 @@
  */
 
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Title } from '@angular/platform-browser';
@@ -48,7 +48,7 @@ import { getNodeId } from '../../utils/utils';
   styleUrl: './editor.component.scss',
   encapsulation: ViewEncapsulation.None
 })
-export class EditorComponent implements OnInit {
+export class EditorComponent implements OnInit, OnDestroy {
   private localizedDatePipe = inject(LocalizedDatePipe);
   private nodeSelectorService = inject(NodeSelectorService);
   private dialog = inject(MatDialog);
@@ -57,6 +57,7 @@ export class EditorComponent implements OnInit {
   private favoritesApi: FavoritesApi;
 
   showSpinner = true;
+  oldFavicon = '';
 
   editorId = 'onlyofficeEditor';
   documentServerUrl = '';
@@ -82,6 +83,8 @@ export class EditorComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.oldFavicon = this.faviconService.getFavicon();
+
     this.route.params.subscribe(({ nodeId }: Params) => {
       if (nodeId === 'create-new') {
         const match = window.name.match(/^create-new-([\w-]+):([\w.-]+\/[\w.+-]+)$/);
@@ -167,6 +170,10 @@ export class EditorComponent implements OnInit {
           this.showSpinner = false;
         });
     });
+  }
+
+  ngOnDestroy() {
+    this.faviconService.setFavicon(this.oldFavicon);
   }
 
   private _updateCustomization = (customization: any) => {
