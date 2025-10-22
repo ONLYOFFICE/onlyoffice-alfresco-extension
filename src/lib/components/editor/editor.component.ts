@@ -138,6 +138,8 @@ export class EditorComponent implements OnInit {
             this.config.type = 'mobile';
           }
 
+          this._removeTemplates(this.config);
+
           this.config.events = {
             onAppReady: this.onAppReady,
             onMetaChange: this.onMetaChange,
@@ -181,6 +183,10 @@ export class EditorComponent implements OnInit {
     return /android|avantgo|playbook|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od|ad)|iris|kindle|lge |maemo|midp|mmp|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\\|plucker|pocket|psp|symbian|treo|up\\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i.test(
       navigator.userAgent
     );
+  };
+
+  private _removeTemplates = (config: any) => {
+    config.editorConfig.templates = null;
   };
 
   onLoadComponentError = () => {
