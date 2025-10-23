@@ -20,8 +20,12 @@
 import { WebscriptApi } from '@alfresco/js-api';
 
 export class OnlyofficeApi extends WebscriptApi {
-  getEditorConfig(nodeId: string) {
-    return this.executeWebScript('GET', 'parashift/onlyoffice/prepare?nodeRef=workspace://SpacesStore/' + nodeId);
+  getEditorConfig(nodeId: string, preview = false) {
+    return this.executeWebScript('GET', 'parashift/onlyoffice/prepare?nodeRef=workspace://SpacesStore/' + nodeId + '&preview=' + preview);
+  }
+
+  getShareEditorConfig(sharedId: string) {
+    return this.executeWebScript('GET', 'parashift/onlyoffice/prepare-quick-share?sharedId=' + sharedId);
   }
 
   getHistory(nodeId: string) {

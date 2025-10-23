@@ -95,6 +95,16 @@ export const displayDownloadAsAction = (context: RuleContext) => {
   return hasSupportedFiles;
 };
 
+export const disabledViewer = (): boolean => {
+  const settings = getOnlyofficeAlfrescoExtensionSettings();
+
+  if (!settings?.previewEnabled) {
+    return true;
+  }
+
+  return false;
+};
+
 const _isViewable = (node: Node): boolean => {
   const fileName = node.name;
   const settings = getOnlyofficeAlfrescoExtensionSettings();

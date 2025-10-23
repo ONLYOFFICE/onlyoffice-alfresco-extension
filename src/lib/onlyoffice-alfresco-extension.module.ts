@@ -17,30 +17,43 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import { EnvironmentProviders, NgModule, Provider } from '@angular/core';
+import { Location } from '@angular/common';
+import { EnvironmentProviders, inject, NgModule, provideAppInitializer, Provider } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
 
-import { EXTENSION_DATA_LOADERS } from '@alfresco/aca-shared';
 import { provideTranslations } from '@alfresco/adf-core';
-import { provideExtensionConfig, provideExtensions } from '@alfresco/adf-extensions';
+import { ExtensionService, provideExtensionConfig, provideExtensions } from '@alfresco/adf-extensions';
 import { provideEffects } from '@ngrx/effects';
+import { first } from 'rxjs';
+
+import { EXTENSION_DATA_LOADERS } from '../../../aca-shared/src/public-api';
 
 import { EditorComponent } from './components/editor/editor.component';
-import { onlyofficeAlfrescoExtensionLoader } from './configuration/onlyoffice-alfrsco-extension.config';
+import { ViewerComponent } from './components/viewer/viewer.component';
+import { onlyofficeAlfrescoExtensionLoader, setViewerExtensionConfig } from './configuration/onlyoffice-alfrsco-extension.config';
 import { OnlyofficeAlfrescoExtensionEffects } from './effects/onlyoffice-alfresco-extension.effects';
-import { displayConvertAction, displayDownloadAsAction, displayEditAction, displayViewAction } from './rules/onlyoffice-alfresco-extension.rules';
+import {
+  disabledViewer,
+  displayConvertAction,
+  displayDownloadAsAction,
+  displayEditAction,
+  displayViewAction
+} from './rules/onlyoffice-alfresco-extension.rules';
 
 export function provideOnlyofficeAlfrescoExtension(): (Provider | EnvironmentProviders)[] {
   return [
     provideExtensionConfig(['onlyoffice-alfresco-extension.json']),
     provideExtensions({
       components: {
-        'onlyoffice-alfresco-extension.editor.component': EditorComponent
+        'onlyoffice-alfresco-extension.editor.component': EditorComponent,
+        'onlyoffice-alfresco-extension.viewer.component': ViewerComponent
       },
       evaluators: {
         'onlyoffice-alfresco-extension.rules.displayViewAction': displayViewAction,
         'onlyoffice-alfresco-extension.rules.displayEditAction': displayEditAction,
         'onlyoffice-alfresco-extension.rules.displayConvertAction': displayConvertAction,
-        'onlyoffice-alfresco-extension.rules.displayDownloadAsAction': displayDownloadAsAction
+        'onlyoffice-alfresco-extension.rules.displayDownloadAsAction': displayDownloadAsAction,
+        'onlyoffice-alfresco-extension.rules.disabledViewer': disabledViewer
       }
     }),
     provideEffects([OnlyofficeAlfrescoExtensionEffects]),
@@ -49,7 +62,22 @@ export function provideOnlyofficeAlfrescoExtension(): (Provider | EnvironmentPro
       provide: EXTENSION_DATA_LOADERS,
       multi: true,
       useValue: onlyofficeAlfrescoExtensionLoader
-    }
+    },
+    provideAppInitializer(() => {
+      const location = inject(Location);
+      const extensionService = inject(ExtensionService);
+      const router = inject(Router);
+
+      router.events.pipe(first((event) => event instanceof NavigationEnd)).subscribe(() => {
+        setViewerExtensionConfig(extensionService);
+      });
+
+      if (location.path().startsWith('/preview')) {
+        return onlyofficeAlfrescoExtensionLoader();
+      }
+
+      return Promise.resolve(true);
+    })
   ];
 }
 

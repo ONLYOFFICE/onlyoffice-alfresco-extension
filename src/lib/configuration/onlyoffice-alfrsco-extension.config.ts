@@ -17,12 +17,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+import { HttpClient } from '@angular/common/http';
 import { inject } from '@angular/core';
 
-import { AlfrescoApiService } from '@alfresco/adf-content-services';
+import { ExtensionService, ViewerExtensionRef } from '@alfresco/adf-extensions';
 import { from, map } from 'rxjs';
-
-import { OnlyofficeApi } from '../api/onlyoffice.api';
 
 export interface Format {
   name: string;
@@ -37,6 +36,7 @@ let settings:
       convertOriginal: boolean;
       editableFormats: Record<string, boolean>;
       supportedFormats?: Format[];
+      previewEnabled?: boolean;
     }
   | undefined;
 
@@ -45,10 +45,9 @@ export const onlyofficeAlfrescoExtensionLoader = () => {
     return from(Promise.resolve(true));
   }
 
-  const apiService = inject(AlfrescoApiService);
-  const onlyofficeApi = new OnlyofficeApi(apiService.getInstance().contentPrivateClient);
+  const httpClient = inject(HttpClient);
 
-  return from(onlyofficeApi.getSettings()).pipe(
+  return httpClient.get('alfresco/service/parashift/onlyoffice/onlyoffice-settings').pipe(
     map((response: any) => {
       settings = response;
 
@@ -57,8 +56,33 @@ export const onlyofficeAlfrescoExtensionLoader = () => {
   );
 };
 
+export const setViewerExtensionConfig = (extensionService: ExtensionService) => {
+  const viewerExtension = extensionService
+    .getElements<ViewerExtensionRef>('features.viewer.extensions')
+    .find((extension) => extension.id === 'onlyoffice-alfresco-extension:viewer:extension:viewer');
+
+  if (viewerExtension) {
+    // @ts-expect-error fileExtensions is not defined in ViewerExtensionRef, but it exists at runtime
+    viewerExtension.fileExtension = getViewExtensions();
+  }
+};
+
 export const getOnlyofficeAlfrescoExtensionSettings = () => {
   return settings;
+};
+
+export const getViewExtensions = () => {
+  let viewExtensions: string[] = [];
+  const currentSettings = getOnlyofficeAlfrescoExtensionSettings();
+  const supportedFormats = currentSettings?.supportedFormats;
+
+  if (supportedFormats) {
+    viewExtensions = supportedFormats
+      .filter((format) => format.actions.includes('view'))
+      .reduce((extensions, format) => [...extensions, format.name], viewExtensions);
+  }
+
+  return viewExtensions;
 };
 
 export const getConvertExtensions = (sourceExtension: string, includeSource = false): string[] => {

@@ -142,6 +142,15 @@
       }
     ],
     "viewer": {
+      "extensions": [
+        {
+          "id": "onlyoffice-alfresco-extension:viewer:extension:viewer",
+          "component": "onlyoffice-alfresco-extension.viewer.component",
+          "rules": {
+            "disabled": "onlyoffice-alfresco-extension.rules.disabledViewer"
+          }
+        }
+      ],
       "toolbarActions": [
         {
           "id": "app.viewer.toolbar.more",

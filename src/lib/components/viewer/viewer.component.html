@@ -1,0 +1,13 @@
+<aca-generic-error 
+  *ngIf="!loadingConfig && error"
+  [text]="error"
+/>
+
+<document-editor
+  *ngIf="!loadingConfig && !error"
+  [id]="editorId" 
+  [documentServerUrl]="documentServerUrl"
+  [config]="config"
+  [shardkey]="shardKey"
+  [onLoadComponentError]="onLoadComponentError"
+/> 
