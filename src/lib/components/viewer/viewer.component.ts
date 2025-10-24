@@ -18,7 +18,7 @@
  */
 
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 
 import { AlfrescoApiService } from '@alfresco/adf-content-services';
@@ -35,7 +35,7 @@ import { OnlyofficeApi } from '../../api/onlyoffice.api';
   styleUrl: './viewer.component.scss',
   encapsulation: ViewEncapsulation.None
 })
-export class ViewerComponent implements OnInit {
+export class ViewerComponent implements OnInit, OnDestroy {
   showToolbar = true;
 
   @Input()
@@ -55,7 +55,6 @@ export class ViewerComponent implements OnInit {
   editorId = 'onlyofficeEditor';
   documentServerUrl = '';
   config: IConfig = {};
-  shardKey = '';
   error: string | undefined;
 
   private onlyofficeApi: OnlyofficeApi;
@@ -100,6 +99,12 @@ export class ViewerComponent implements OnInit {
     }
   }
 
+  ngOnDestroy(): void {
+    if (window.DocsAPI) {
+      delete window.DocsAPI;
+    }
+  }
+
   onAppReady = () => {
     this.contentLoaded.emit();
   };
@@ -112,7 +117,6 @@ export class ViewerComponent implements OnInit {
   private _loadConfigHandler = (config: any) => {
     this.documentServerUrl = new URL(config.documentServerApiUrl).origin; // ToDo send from backend
     this.config = config.editorConfig;
-    this.shardKey = this.config.document?.key || '';
 
     if (this.config.editorConfig) {
       this._updateCustomization(this.config.editorConfig.customization);

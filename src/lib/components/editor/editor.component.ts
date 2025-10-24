@@ -62,7 +62,6 @@ export class EditorComponent implements OnInit, OnDestroy {
   editorId = 'onlyofficeEditor';
   documentServerUrl = '';
   config: IConfig = {};
-  shardKey = '';
   isDemoServer = false;
   node: NodeEntry | undefined;
   error: string | undefined;
@@ -129,7 +128,6 @@ export class EditorComponent implements OnInit, OnDestroy {
 
           this.documentServerUrl = new URL(config.documentServerApiUrl).origin; // ToDo send from backend
           this.config = config.editorConfig;
-          this.shardKey = this.config.document?.key || '';
           this.isDemoServer = config.demo;
 
           this.titleService.setTitle(this.config.document?.title + ' - ONLYOFFICE');
@@ -177,6 +175,9 @@ export class EditorComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.faviconService.setFavicon(this.oldFavicon);
+    if (window.DocsAPI) {
+      delete window.DocsAPI;
+    }
   }
 
   private _updateCustomization = (customization: any) => {
