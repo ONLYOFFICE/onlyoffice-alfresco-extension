@@ -4,9 +4,6 @@
   "lib": {
     "entryFile": "src/index.ts"
   },
-  "allowedNonPeerDependencies": [
-    "@onlyoffice/document-editor-angular"
-  ],
   "assets": [
     "assets"
   ]
