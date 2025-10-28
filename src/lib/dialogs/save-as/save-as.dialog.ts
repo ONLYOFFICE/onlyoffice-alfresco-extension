@@ -45,7 +45,7 @@ import { NodeSelectorService, SelectorType } from '../../services/node-selector.
 export class SaveAsDialogComponent implements OnInit {
   private onlyofficeApi: OnlyofficeApi;
 
-  public form: UntypedFormGroup;
+  public form!: UntypedFormGroup;
 
   constructor(
     private formBuilder: UntypedFormBuilder,

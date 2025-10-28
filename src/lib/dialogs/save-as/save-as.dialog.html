@@ -12,8 +12,8 @@
           required
         />
 
-        <mat-error *ngIf="form.controls['name'].errors?.message">
-          {{ form.controls['name'].errors?.message | translate }}
+        <mat-error *ngIf="form.controls['name'].errors?.['message']">
+          {{ form.controls['name'].errors?.['message'] | translate }}
         </mat-error>
       </mat-form-field>
 
@@ -35,8 +35,8 @@
           <mat-icon class="adf-textitem-icon">folder</mat-icon>
         </button>
 
-        <mat-error *ngIf="form.controls['destinationFolderId'].errors?.message">
-          {{ form.controls['destinationFolderId'].errors?.message | translate }}
+        <mat-error *ngIf="form.controls['destinationFolderId'].errors?.['message']">
+          {{ form.controls['destinationFolderId'].errors?.['message'] | translate }}
         </mat-error>
       </mat-form-field>
     </form>
