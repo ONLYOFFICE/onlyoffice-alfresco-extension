@@ -21,11 +21,11 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 
+import { GenericErrorComponent } from '@alfresco/aca-shared';
 import { AlfrescoApiService } from '@alfresco/adf-content-services';
 import { TranslationService } from '@alfresco/adf-core';
 import { DocumentEditorModule, IConfig } from '@onlyoffice/document-editor-angular';
 
-import { GenericErrorComponent } from '../../../../../aca-shared/src/public-api';
 import { OnlyofficeApi } from '../../api/onlyoffice.api';
 
 @Component({
@@ -39,13 +39,13 @@ export class ViewerComponent implements OnInit, OnDestroy {
   showToolbar = true;
 
   @Input()
-  url: string;
+  url = '';
 
   @Input()
-  extension: string;
+  extension = '';
 
   @Input()
-  nodeId: string;
+  nodeId = '';
 
   @Output()
   contentLoaded = new EventEmitter<void>();
