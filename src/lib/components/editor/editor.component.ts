@@ -212,9 +212,9 @@ export class EditorComponent implements OnInit, OnDestroy {
     }
   };
 
-  onMetaChange = (event: { data: any }) => {
+  onMetaChange = (event: object) => {
     if (this.node) {
-      const { data } = event;
+      const { data } = event as { data: any };
       const { favorite } = data;
 
       if (favorite) {
@@ -306,9 +306,9 @@ export class EditorComponent implements OnInit, OnDestroy {
     document.location.reload();
   };
 
-  onRequestHistoryData = (event: { data: string }) => {
+  onRequestHistoryData = (event: object) => {
     if (this.node) {
-      const version = event.data;
+      const version = (event as { data: string }).data;
 
       this.onlyofficeApi
         .getHistoryData(this.node?.entry.id, version)
@@ -323,11 +323,11 @@ export class EditorComponent implements OnInit, OnDestroy {
     }
   };
 
-  onRequestInsertImage = (event: { data: { c: string } }) => {
+  onRequestInsertImage = (event: object) => {
     if (this.node) {
       const select = this.nodeSelectorService.getContentNodeSelection(SelectorType.INSERT_IMAGE, this.node);
 
-      const command = event.data.c;
+      const command = (event as { data: { c: string } }).data.c;
 
       select.subscribe((nodes: Node[]) => {
         const items = nodes.map((node) => {
@@ -394,8 +394,8 @@ export class EditorComponent implements OnInit, OnDestroy {
     }
   };
 
-  onRequestOpen = (event: { data: any }) => {
-    const { data } = event;
+  onRequestOpen = (event: object) => {
+    const { data } = event as { data: any };
     const { referenceData, windowName } = data;
     const { fileKey } = referenceData;
 
@@ -404,8 +404,8 @@ export class EditorComponent implements OnInit, OnDestroy {
     window.open(this.urlService.createUrl(['/onlyoffice-editor', nodeId]), windowName);
   };
 
-  onRequestReferenceData = (event: { data: any }) => {
-    const { data } = event;
+  onRequestReferenceData = (event: object) => {
+    const { data } = event as { data: string };
 
     this.onlyofficeApi
       .getReferenceData(data)
@@ -483,8 +483,8 @@ export class EditorComponent implements OnInit, OnDestroy {
     }
   };
 
-  onRequestSaveAs = (event: { data: any }) => {
-    const { data } = event;
+  onRequestSaveAs = (event: object) => {
+    const { data } = event as { data: any };
     const { title, url } = data;
 
     if (this.node) {
