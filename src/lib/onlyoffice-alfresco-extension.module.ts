@@ -26,7 +26,7 @@ import { ExtensionService, provideExtensionConfig, provideExtensions } from '@al
 import { provideEffects } from '@ngrx/effects';
 import { first } from 'rxjs';
 
-import { EXTENSION_DATA_LOADERS } from '../../../aca-shared/src/public-api';
+import { EXTENSION_DATA_LOADERS } from '@alfresco/aca-shared';
 
 import { EditorComponent } from './components/editor/editor.component';
 import { ViewerComponent } from './components/viewer/viewer.component';
