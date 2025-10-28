@@ -6,5 +6,8 @@
   },
   "allowedNonPeerDependencies": [
     "@onlyoffice/document-editor-angular"
+  ],
+  "assets": [
+    "assets"
   ]
 }
