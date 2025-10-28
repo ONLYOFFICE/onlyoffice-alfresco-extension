@@ -40,6 +40,11 @@
       },
       "SAVE_AS": {
         "TITLE": "Save Copy As",
+        "FIELDS": {
+          "DESTINATION_FOLDER": {
+            "TITLE": "Destination folder"
+          }
+        },
         "MESSAGES": {
           "SUCCESS": "Document was successfully saved"
         }
