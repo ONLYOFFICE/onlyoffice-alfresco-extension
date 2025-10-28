@@ -1,0 +1,66 @@
+{
+  "ONLYOFFICE_ALFRESCO_EXTENSION": {
+    "PAGES": {
+      "EDITOR": {
+        "MESSAGES": {
+          "DEMO_NOTIFICATION": "Вы используете публичный демонстрационный сервер документов ONLYOFFICE. Пожалуйста, не храните конфиденциальные данные.",
+          "DOCS_API_UNDEFINED": "Приложение ONLYOFFICE недоступно. Пожалуйста, свяжитесь с администратором"
+        }
+      },
+      "CREATE": {
+        "TITLE": "Создать с помощью ONLYOFFICE",
+        "FIELDS": {
+          "DOCUMENT_TYPE": {
+            "TITLE": "Тип документа",
+            "OPTIONS": {
+              "WORD": "Документ",
+              "CELL": "Таблица",
+              "SLIDE": "Презентация",
+              "PDF": "PDF-форма"
+            }
+          }
+        }
+      },
+      "CONVERT": {
+        "TITLE": "Конвертация {{name}}",
+        "COMPLETE": "выполнено",
+        "MESSAGES": {
+          "SUCCESS": "{{name}} был успешно сконвертирован",
+          "ERROR": "Ошибка при конвертации {{name}}"
+        }
+      },
+      "DOWNLOAD_AS": {
+        "TITLE": "Скачать как...",
+        "TABLE": {
+          "COLUMNS": {
+            "NAME": "Имя",
+            "OUTPUT_TYPE": "Тип файла"
+          }
+        }
+      },
+      "SAVE_AS": {
+        "TITLE": "Сохранить копию как",
+        "FIELDS": {
+          "DESTINATION_FOLDER": {
+            "TITLE": "Папка назначения"
+          }
+        },
+        "MESSAGES": {
+          "SUCCESS": "Документ успешно сохранен"
+        }
+      }
+    },
+    "BUTTONS": {
+      "VIEW_IN_ONLYOFFICE": "Просмотреть в ONLYOFFICE",
+      "EDIT_IN_ONLYOFFICE": "Редактировать в ONLYOFFICE",
+      "CONVERT_IN_ONLYOFFICE": "Конвертировать в ONLYOFFICE",
+      "CREATE_IN_ONLYOFFICE": "Создать с помощью ONLYOFFICE",
+      "CANCEL": "Отмена",
+      "CREATE": "Создать",
+      "DOWNLOAD_AS": "Скачать как",
+      "DOWNLOAD": "Скачать",
+      "REMOVE": "Удалить",
+      "SAVE": "Сохранить"
+    }
+  }
+}
