@@ -51,7 +51,7 @@ export class OnlyofficeAlfrescoExtensionEffects {
   private dialog = inject(MatDialog);
   private urlService = inject(UrlService);
 
-  private _onlyofficeApi: OnlyofficeApi;
+  private _onlyofficeApi!: OnlyofficeApi;
   get onlyofficeApi(): OnlyofficeApi {
     this._onlyofficeApi = this._onlyofficeApi ?? new OnlyofficeApi(this.apiService.getInstance().contentPrivateClient);
     return this._onlyofficeApi;
@@ -214,7 +214,7 @@ export class OnlyofficeAlfrescoExtensionEffects {
   }
 
   private focusCreateMenuButton(): void {
-    document.querySelector<HTMLElement>('app-toolbar-menu button[id="app.toolbar.create"]').focus();
+    document.querySelector<HTMLElement>('app-toolbar-menu button[id="app.toolbar.create"]')?.focus();
   }
 
   private focusAfterClose(focusedElementSelector?: string): void {
