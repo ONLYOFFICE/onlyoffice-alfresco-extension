@@ -26,8 +26,8 @@
           </mat-option>
         </mat-select>
 
-        <mat-error *ngIf="form.controls['documentType'].errors?.message">
-          {{ form.controls['documentType'].errors?.message | translate }}
+        <mat-error *ngIf="form.controls['documentType'].errors?.['message']">
+          {{ form.controls['documentType'].errors?.['message'] | translate }}
         </mat-error>
       </mat-form-field>
     </form>

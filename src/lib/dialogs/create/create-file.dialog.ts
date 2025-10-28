@@ -42,7 +42,7 @@ import { CreateFile } from '../../actions/onlyoffice-alfresco-extension.actions'
   host: { class: 'onlyoffice-alfresco-extension' }
 })
 export class CreateFileDialogComponent implements OnInit {
-  form: UntypedFormGroup;
+  form!: UntypedFormGroup;
 
   constructor(
     private store: Store<AppStore>,
