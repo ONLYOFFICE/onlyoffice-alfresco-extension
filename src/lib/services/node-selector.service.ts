@@ -110,7 +110,10 @@ export class NodeSelectorService {
     if (nodeEntry.parentId) {
       entryParentId = nodeEntry.parentId;
     } else if (nodeEntry.path?.elements?.length) {
-      entryParentId = nodeEntry.path.elements[nodeEntry.path.elements.length - 1].id;
+      const lastElement = nodeEntry.path.elements[nodeEntry.path.elements.length - 1];
+      if (lastElement.id) {
+        entryParentId = lastElement.id;
+      }
     }
 
     return entryParentId;
@@ -232,7 +235,10 @@ export class NodeSelectorService {
   }
 
   private normalizeSitePath(node: Node) {
-    const elements = node.path.elements;
+    const elements = node.path?.elements;
+    if (!elements || !Array.isArray(elements)) {
+      return;
+    }
 
     // remove 'Company Home'
     elements.splice(0, 1);
@@ -244,7 +250,9 @@ export class NodeSelectorService {
     if (this.isSiteContainer(node)) {
       // rename 'documentLibrary' entry to the target site display name
       // clicking on the breadcrumb entry loads the site content
-      node.name = elements[1].name;
+      if (elements[1]?.name) {
+        node.name = elements[1].name;
+      }
 
       // remove the site entry
       elements.splice(1, 1);
@@ -258,9 +266,6 @@ export class NodeSelectorService {
   }
 
   private isSiteContainer(node: Node): boolean {
-    if (node?.aspectNames?.length > 0) {
-      return node.aspectNames.indexOf('st:siteContainer') >= 0;
-    }
-    return false;
+    return Array.isArray(node?.aspectNames) && node.aspectNames.includes('st:siteContainer');
   }
 }
