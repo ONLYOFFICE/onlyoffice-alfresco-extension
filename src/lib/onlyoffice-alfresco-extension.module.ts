@@ -21,12 +21,11 @@ import { Location } from '@angular/common';
 import { EnvironmentProviders, inject, NgModule, provideAppInitializer, Provider } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 
+import { EXTENSION_DATA_LOADERS } from '@alfresco/aca-shared';
 import { provideTranslations } from '@alfresco/adf-core';
 import { ExtensionService, provideExtensionConfig, provideExtensions } from '@alfresco/adf-extensions';
 import { provideEffects } from '@ngrx/effects';
 import { first } from 'rxjs';
-
-import { EXTENSION_DATA_LOADERS } from '@alfresco/aca-shared';
 
 import { EditorComponent } from './components/editor/editor.component';
 import { ViewerComponent } from './components/viewer/viewer.component';
