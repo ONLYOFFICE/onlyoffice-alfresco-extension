@@ -29,8 +29,11 @@
       "defaultConfiguration": "production"
     },
     "nx-release-publish": {
+      "executor": "@nx/js:release-publish",
+      "dependsOn": [],
       "options": {
-        "packageRoot": "dist/{projectRoot}"
+        "packageRoot": "dist/{projectRoot}",
+        "publishDependencies": false
       }
     },
     "lint": {
