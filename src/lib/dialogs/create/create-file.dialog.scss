@@ -1,4 +1,2 @@
-/* stylelint-disable selector-class-pattern */
-
-@import '../../styles/common.scss';
-@import '../../styles/dialog.scss';
+@use '../../styles/common' as *;
+@use '../../styles/dialog' as *;
