@@ -1,0 +1,66 @@
+{
+  "ONLYOFFICE_ALFRESCO_EXTENSION": {
+    "PAGES": {
+      "EDITOR": {
+        "MESSAGES": {
+          "DEMO_NOTIFICATION": "Stai utilizzando il server di documenti demo pubblico di ONLYOFFICE. Non archiviare dati sensibili.",
+          "DOCS_API_UNDEFINED": "ONLYOFFICE non è raggiungibile. Contatta l'amministratore"
+        }
+      },
+      "CREATE": {
+        "TITLE": "Crea con ONLYOFFICE",
+        "FIELDS": {
+          "DOCUMENT_TYPE": {
+            "TITLE": "Tipo di documento",
+            "OPTIONS": {
+              "WORD": "Documento",
+              "CELL": "Foglio di calcolo",
+              "SLIDE": "Presentazione",
+              "PDF": "Modulo PDF"
+            }
+          }
+        }
+      },
+      "CONVERT": {
+        "TITLE": "Conversione di {{name}}",
+        "COMPLETE": "completato",
+        "MESSAGES": {
+          "SUCCESS": "{{name}} è stato convertito con successo",
+          "ERROR": "Impossibile convertire {{name}}"
+        }
+      },
+      "DOWNLOAD_AS": {
+        "TITLE": "Scarica come...",
+        "TABLE": {
+          "COLUMNS": {
+            "NAME": "Nome",
+            "OUTPUT_TYPE": "Formato di output"
+          }
+        }
+      },
+      "SAVE_AS": {
+        "TITLE": "Salva copia come",
+        "FIELDS": {
+          "DESTINATION_FOLDER": {
+            "TITLE": "Cartella di destinazione"
+          }
+        },
+        "MESSAGES": {
+          "SUCCESS": "Il documento è stato salvato con successo"
+        }
+      }
+    },
+    "BUTTONS": {
+      "VIEW_IN_ONLYOFFICE": "Visualizza in ONLYOFFICE",
+      "EDIT_IN_ONLYOFFICE": "Modifica in ONLYOFFICE",
+      "CONVERT_IN_ONLYOFFICE": "Converti con ONLYOFFICE",
+      "CREATE_IN_ONLYOFFICE": "Crea con ONLYOFFICE",
+      "CANCEL": "Annulla",
+      "CREATE": "Crea",
+      "DOWNLOAD_AS": "Scarica come",
+      "DOWNLOAD": "Scarica",
+      "REMOVE": "Rimuovi",
+      "SAVE": "Salva"
+    }
+  }
+}

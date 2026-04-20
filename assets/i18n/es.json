@@ -1,0 +1,66 @@
+{
+  "ONLYOFFICE_ALFRESCO_EXTENSION": {
+    "PAGES": {
+      "EDITOR": {
+        "MESSAGES": {
+          "DEMO_NOTIFICATION": "Está utilizando el servidor de documentos de demostración público de ONLYOFFICE. Por favor, no almacene datos confidenciales.",
+          "DOCS_API_UNDEFINED": "No se puede acceder a ONLYOFFICE. Por favor, contacte al administrador"
+        }
+      },
+      "CREATE": {
+        "TITLE": "Crear con ONLYOFFICE",
+        "FIELDS": {
+          "DOCUMENT_TYPE": {
+            "TITLE": "Tipo de documento",
+            "OPTIONS": {
+              "WORD": "Documento",
+              "CELL": "Hoja de cálculo",
+              "SLIDE": "Presentación",
+              "PDF": "Formulario PDF"
+            }
+          }
+        }
+      },
+      "CONVERT": {
+        "TITLE": "Convirtiendo {{name}}",
+        "COMPLETE": "completado",
+        "MESSAGES": {
+          "SUCCESS": "{{name}} se convirtió correctamente",
+          "ERROR": "No se pudo convertir {{name}}"
+        }
+      },
+      "DOWNLOAD_AS": {
+        "TITLE": "Descargar como...",
+        "TABLE": {
+          "COLUMNS": {
+            "NAME": "Nombre",
+            "OUTPUT_TYPE": "Tipo de salida"
+          }
+        }
+      },
+      "SAVE_AS": {
+        "TITLE": "Guardar copia como",
+        "FIELDS": {
+          "DESTINATION_FOLDER": {
+            "TITLE": "Carpeta de destino"
+          }
+        },
+        "MESSAGES": {
+          "SUCCESS": "El documento se guardó correctamente"
+        }
+      }
+    },
+    "BUTTONS": {
+      "VIEW_IN_ONLYOFFICE": "Ver en ONLYOFFICE",
+      "EDIT_IN_ONLYOFFICE": "Editar en ONLYOFFICE",
+      "CONVERT_IN_ONLYOFFICE": "Convertir con ONLYOFFICE",
+      "CREATE_IN_ONLYOFFICE": "Crear con ONLYOFFICE",
+      "CANCEL": "Cancelar",
+      "CREATE": "Crear",
+      "DOWNLOAD_AS": "Descargar como",
+      "DOWNLOAD": "Descargar",
+      "REMOVE": "Eliminar",
+      "SAVE": "Guardar"
+    }
+  }
+}
