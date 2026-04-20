@@ -41,5 +41,13 @@
     "@onlyoffice/document-editor-angular": "^6.5.1",
     "rxjs": "^7.8.2"
   },
+  "peerDependenciesMeta": {
+    "@alfresco/aca-content": {
+      "optional": true
+    },
+    "@alfresco/aca-shared": {
+      "optional": true
+    }
+  },
   "sideEffects": false
 }
