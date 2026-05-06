@@ -90,7 +90,7 @@ Two custom Alfresco aspects are used: `cm:workingcopy` and `od:editingInOnlyoffi
 
 ### License Header
 
-Every `.ts` source file must begin with the GPL-3.0 header comment. This is enforced by ESLint (`license-header/header` rule). The header template is in `.config/source-license-header.js`.
+Every `.ts` source file must begin with the Apache-2.0 header comment. This is enforced by ESLint (`license-header/header` rule). The header template is in `.config/source-license-header.js`.
 
 ### Selectors & Naming
 
