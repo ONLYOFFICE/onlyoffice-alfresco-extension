@@ -1,6 +1,6 @@
 {
   "$id": "onlyoffice-alfresco-extension",
-  "$version": "0.0.1",
+  "$version": "0.0.2",
   "$vendor": "Ascensio System SIA <integration@onlyoffice.com> (https://www.onlyoffice.com)",
   "$name": "ONLYOFFICE Docs",
   "$description": "ONLYOFFICE Docs plugin",
