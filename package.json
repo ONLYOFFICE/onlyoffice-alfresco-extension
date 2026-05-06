@@ -23,12 +23,12 @@
     "onlyoffice"
   ],
   "peerDependencies": {
-    "@alfresco/aca-content": "^0.0.1",
-    "@alfresco/aca-shared": "^0.0.1",
-    "@alfresco/adf-content-services": "^8.0.0",
-    "@alfresco/adf-core": "^8.0.0",
-    "@alfresco/adf-extensions": "^8.0.0",
-    "@alfresco/js-api": "^9.0.0",
+    "@alfresco/aca-content": ">=0.0.1",
+    "@alfresco/aca-shared": ">=0.0.1",
+    "@alfresco/adf-content-services": ">=8.0.0",
+    "@alfresco/adf-core": ">=8.0.0",
+    "@alfresco/adf-extensions": ">=8.0.0",
+    "@alfresco/js-api": ">=9.0.0",
     "@angular/common": "^19.2.0",
     "@angular/core": "^19.2.0",
     "@angular/forms": "^19.2.6",
@@ -37,9 +37,9 @@
     "@angular/router": "^19.2.6",
     "@ngrx/effects": "^19.2.1",
     "@ngrx/store": "^19.2.1",
-    "@ngx-translate/core": "^16.0.4",
+    "@ngx-translate/core": ">=16.0.4",
     "@onlyoffice/document-editor-angular": "^6.5.1",
-    "rxjs": "^7.8.2"
+    "rxjs": ">=7.8.2"
   },
   "peerDependenciesMeta": {
     "@alfresco/aca-content": {
