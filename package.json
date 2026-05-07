@@ -10,7 +10,8 @@
   "homepage": "https://github.com/ONLYOFFICE/onlyoffice-alfresco-extension#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ONLYOFFICE/onlyoffice-alfresco-extension"
+    "url": "https://github.com/ONLYOFFICE/alfresco-content-app",
+    "directory": "projects/onlyoffice-alfresco-extension"
   },
   "author": "Ascensio System SIA <integration@onlyoffice.com> (https://www.onlyoffice.com)",
   "maintainers": [
