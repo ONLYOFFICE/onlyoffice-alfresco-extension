@@ -1,0 +1,19 @@
+{
+  "extends": "../../cspell.json",
+  "words": [
+    "Ascensio",
+    "ONLYOFFICE",
+    "Onlyoffice",
+    "onlyoffice",
+    "workingcopy",
+    "openxmlformats",
+    "officedocument",
+    "wordprocessingml",
+    "spreadsheetml",
+    "presentationml",
+    "mysites",
+    "parashift",
+    "goback",
+    "folderlink"
+  ]
+}

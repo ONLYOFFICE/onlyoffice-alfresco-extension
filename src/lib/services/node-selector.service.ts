@@ -1,0 +1,270 @@
+/**
+ *
+ * (c) Copyright Ascensio System SIA 2026
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
+import { Injectable } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+
+import {
+  ContentNodeDialogService,
+  ContentNodeSelectorComponent,
+  ContentNodeSelectorComponentData,
+  ContentService,
+  NodeAction,
+  ShareDataRow
+} from '@alfresco/adf-content-services';
+import { ThumbnailService, TranslationService } from '@alfresco/adf-core';
+import { Node, NodeEntry, Site, SitePaging, SitePagingList } from '@alfresco/js-api';
+import { Subject } from 'rxjs';
+
+export enum SelectorType {
+  FOLDER = 'FOLDER',
+  INSERT_IMAGE = 'INSERT_IMAGE',
+  MAIL_MERGE = 'MAIL_MERGE',
+  COMPARE_FILE = 'COMPARE_FILE',
+  REFERENCE_SOURCE = 'REFERENCE_SOURCE'
+}
+
+@Injectable({
+  providedIn: 'root'
+})
+export class NodeSelectorService {
+  constructor(
+    private dialog: MatDialog,
+    private translation: TranslationService,
+    private contentService: ContentService,
+    private thumbnailService: ThumbnailService
+  ) {}
+
+  getContentNodeSelection(action: SelectorType, node: NodeEntry): Subject<Node[]> {
+    const currentParentFolderId = this.getEntryParentId(node.entry);
+
+    const customDropdown = new SitePaging({
+      list: {
+        entries: [
+          {
+            entry: {
+              guid: '-my-',
+              title: this.translation.instant('APP.BROWSE.PERSONAL.SIDENAV_LINK.LABEL')
+            } as Site
+          },
+          {
+            entry: {
+              guid: '-mysites-',
+              title: this.translation.instant('APP.BROWSE.LIBRARIES.MENU.MY_LIBRARIES.SIDENAV_LINK.LABEL')
+            } as Site
+          }
+        ]
+      } as SitePagingList
+    });
+
+    const title = this.getTitleTranslation();
+
+    const data: ContentNodeSelectorComponentData = {
+      title,
+      actionName: NodeAction.CHOOSE,
+      currentFolderId: currentParentFolderId,
+      dropdownHideMyFiles: true,
+      dropdownSiteList: customDropdown,
+      selectionMode: 'single',
+      rowFilter: this.getRowFilter(action),
+      imageResolver: this.getImageResolver(action),
+      breadcrumbTransform: this.customizeBreadcrumb.bind(this),
+      isSelectionValid: this.getSelectionValidator(action),
+      excludeSiteContent: ContentNodeDialogService.nonDocumentSiteContent,
+      select: new Subject<Node[]>()
+    };
+
+    this.dialog.open(ContentNodeSelectorComponent, {
+      data,
+      panelClass: 'adf-content-node-selector-dialog',
+      width: '630px',
+      role: 'dialog'
+    });
+
+    data.select.subscribe({
+      complete: this.close.bind(this)
+    });
+
+    return data.select;
+  }
+
+  getEntryParentId(nodeEntry: Node) {
+    let entryParentId = '';
+
+    if (nodeEntry.parentId) {
+      entryParentId = nodeEntry.parentId;
+    } else if (nodeEntry.path?.elements?.length) {
+      const lastElement = nodeEntry.path.elements[nodeEntry.path.elements.length - 1];
+      if (lastElement.id) {
+        entryParentId = lastElement.id;
+      }
+    }
+
+    return entryParentId;
+  }
+
+  getTitleTranslation(): string {
+    return this.translation.instant(`NODE_SELECTOR.CHOOSE_ITEM`, { name: this.translation.instant('APP.BROWSE.PERSONAL.SIDENAV_LINK.LABEL') });
+  }
+
+  close() {
+    this.dialog.closeAll();
+  }
+
+  private getSelectionValidator(type: SelectorType) {
+    switch (type) {
+      case SelectorType.FOLDER:
+        return this.folderSelectionValidator.bind(this);
+      default:
+        return this.fileSelectionValidator.bind(this);
+    }
+  }
+
+  private folderSelectionValidator(entry: Node): boolean {
+    return this.hasEntityCreatePermission(entry);
+  }
+
+  private fileSelectionValidator(entry: Node): boolean {
+    return !this.isSite(entry) && !entry.isFolder;
+  }
+
+  private isSite(entry: any) {
+    return !!entry['guid'] || entry.nodeType === 'st:site' || entry.nodeType === 'st:sites';
+  }
+
+  private hasEntityCreatePermission(entry: Node): boolean {
+    return this.contentService.hasAllowableOperations(entry, 'create');
+  }
+
+  private customizeBreadcrumb(node: Node) {
+    if (node?.path?.elements) {
+      const elements = node.path.elements;
+
+      if (elements.length > 1) {
+        if (elements[1].name === 'User Homes') {
+          elements.splice(0, 2);
+
+          // make sure first item is 'Personal Files'
+          if (elements[0]) {
+            elements[0].name = this.translation.instant('APP.BROWSE.PERSONAL.TITLE');
+            elements[0].id = '-my-';
+          } else {
+            node.name = this.translation.instant('APP.BROWSE.PERSONAL.TITLE');
+          }
+        } else if (elements[1].name === 'Sites') {
+          this.normalizeSitePath(node);
+        }
+      } else if (elements.length === 1) {
+        if (node.name === 'Sites') {
+          node.name = this.translation.instant('APP.BROWSE.LIBRARIES.MENU.MY_LIBRARIES.TITLE');
+          elements.splice(0, 1);
+        }
+      }
+    } else if (node === null) {
+      node = {
+        name: this.translation.instant('APP.BROWSE.LIBRARIES.MENU.MY_LIBRARIES.TITLE'),
+        path: { elements: [] }
+      } as any;
+    }
+
+    return node;
+  }
+
+  private getRowFilter(type: SelectorType) {
+    switch (type) {
+      case SelectorType.FOLDER:
+        return this.folderRowFilter;
+      case SelectorType.REFERENCE_SOURCE:
+        return this.referenceSourceRowFilter;
+      default:
+        return null;
+    }
+  }
+
+  private folderRowFilter(row: ShareDataRow): boolean {
+    const node: Node = row.node.entry;
+
+    return !node.isFile && node.nodeType !== 'app:folderlink';
+  }
+
+  private referenceSourceRowFilter(row: ShareDataRow): boolean {
+    const node = row.node.entry;
+
+    if (node.isFile) {
+      const fileName = node.name;
+      const fileExtension = fileName.split('.').pop()?.toLowerCase();
+
+      return 'xlsx' === fileExtension;
+    } else {
+      return true;
+    }
+  }
+
+  private getImageResolver(type: SelectorType) {
+    switch (type) {
+      case SelectorType.FOLDER:
+        return this.folderImageResolver.bind(this);
+      default:
+        return null;
+    }
+  }
+
+  private folderImageResolver(row: ShareDataRow): string | null {
+    const entry: Node = row.node.entry;
+    if (!this.hasEntityCreatePermission(entry)) {
+      return this.thumbnailService.getMimeTypeIcon('disable/folder');
+    }
+
+    return null;
+  }
+
+  private normalizeSitePath(node: Node) {
+    const elements = node.path?.elements;
+    if (!elements || !Array.isArray(elements)) {
+      return;
+    }
+
+    // remove 'Company Home'
+    elements.splice(0, 1);
+
+    // replace first item with 'File Libraries'
+    elements[0].name = this.translation.instant('APP.BROWSE.LIBRARIES.MENU.MY_LIBRARIES.TITLE');
+    elements[0].id = '-mysites-';
+
+    if (this.isSiteContainer(node)) {
+      // rename 'documentLibrary' entry to the target site display name
+      // clicking on the breadcrumb entry loads the site content
+      if (elements[1]?.name) {
+        node.name = elements[1].name;
+      }
+
+      // remove the site entry
+      elements.splice(1, 1);
+    } else {
+      // remove 'documentLibrary' in the middle of the path
+      const docLib = elements.findIndex((el) => el.name === 'documentLibrary');
+      if (docLib > -1) {
+        elements.splice(docLib, 1);
+      }
+    }
+  }
+
+  private isSiteContainer(node: Node): boolean {
+    return Array.isArray(node?.aspectNames) && node.aspectNames.includes('st:siteContainer');
+  }
+}

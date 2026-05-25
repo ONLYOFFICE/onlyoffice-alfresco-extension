@@ -1,0 +1,22 @@
+<div class="onlyoffice-alfresco-extension-dialog">
+  <h1 mat-dialog-title>{{ 'ONLYOFFICE_ALFRESCO_EXTENSION.PAGES.CONVERT.TITLE' | translate : {name: data.name} }}</h1>
+  
+  <mat-dialog-content class="onlyoffice-alfresco-extension-dialog-content">
+    <mat-progress-bar value="{{ percentageDone }}" mode="determinate" />
+    <div>
+      <span>
+        {{ percentageDone }}%
+      </span>
+        {{ 'ONLYOFFICE_ALFRESCO_EXTENSION.PAGES.CONVERT.COMPLETE' | translate }}
+    </div>
+  </mat-dialog-content>
+  
+  <mat-dialog-actions class="onlyoffice-alfresco-extension-dialog-footer">
+    <button
+      mat-button
+      [disabled]="true"
+    >
+      {{ 'ONLYOFFICE_ALFRESCO_EXTENSION.BUTTONS.CANCEL' | translate }}
+    </button>
+  </mat-dialog-actions>
+</div>

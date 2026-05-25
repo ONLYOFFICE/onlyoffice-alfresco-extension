@@ -1,0 +1,18 @@
+onlyoffice-alfresco-extension-viewer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--theme-background-color);
+
+  document-editor {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+adf-preview-extension {
+  flex: 1;
+  max-width: 818px;
+}

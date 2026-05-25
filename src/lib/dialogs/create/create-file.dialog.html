@@ -1,0 +1,50 @@
+<div class="onlyoffice-alfresco-extension-dialog">
+  <h2 mat-dialog-title>{{ 'ONLYOFFICE_ALFRESCO_EXTENSION.PAGES.CREATE.TITLE' | translate }}</h2>
+
+  <mat-dialog-content class="onlyoffice-alfresco-extension-dialog-content">
+    <form [formGroup]="form" novalidate>
+      <mat-form-field class="full-width">
+        <mat-label>{{ 'ONLYOFFICE_ALFRESCO_EXTENSION.PAGES.CREATE.FIELDS.DOCUMENT_TYPE.TITLE' | translate }}</mat-label>
+
+        <mat-select
+          cdkFocusInitial
+          matSelect
+          formControlName="documentType"
+          required
+        >
+          <mat-option value="application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+            {{ 'ONLYOFFICE_ALFRESCO_EXTENSION.PAGES.CREATE.FIELDS.DOCUMENT_TYPE.OPTIONS.WORD' | translate }}
+          </mat-option>
+          <mat-option value="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+            {{ 'ONLYOFFICE_ALFRESCO_EXTENSION.PAGES.CREATE.FIELDS.DOCUMENT_TYPE.OPTIONS.CELL' | translate }}
+          </mat-option>
+          <mat-option value="application/vnd.openxmlformats-officedocument.presentationml.presentation">
+            {{ 'ONLYOFFICE_ALFRESCO_EXTENSION.PAGES.CREATE.FIELDS.DOCUMENT_TYPE.OPTIONS.SLIDE' | translate }}
+          </mat-option>
+          <mat-option value="application/pdf">
+            {{ 'ONLYOFFICE_ALFRESCO_EXTENSION.PAGES.CREATE.FIELDS.DOCUMENT_TYPE.OPTIONS.PDF' | translate }}
+          </mat-option>
+        </mat-select>
+
+        <mat-error *ngIf="form.controls['documentType'].errors?.['message']">
+          {{ form.controls['documentType'].errors?.['message'] | translate }}
+        </mat-error>
+      </mat-form-field>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions class="onlyoffice-alfresco-extension-dialog-footer">
+    <button mat-button mat-dialog-close>
+      {{ 'ONLYOFFICE_ALFRESCO_EXTENSION.BUTTONS.CANCEL' | translate }}
+    </button>
+
+    <button
+      mat-button
+      class="onlyoffice-alfresco-extension-dialog-action-button"
+      [disabled]="form.invalid"
+      (click)="onSubmit()"
+    >
+      {{ 'ONLYOFFICE_ALFRESCO_EXTENSION.BUTTONS.CREATE' | translate }}
+    </button>
+  </mat-dialog-actions>
+</div>

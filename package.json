@@ -1,0 +1,54 @@
+{
+  "name": "@onlyoffice/alfresco-extension",
+  "version": "1.0.0",
+  "description": "ONLYOFFICE extension for Alfresco Content App - Edit, co-author, and manage office files directly inside Alfresco using ONLYOFFICE Docs",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/ONLYOFFICE/onlyoffice-alfresco-extension/issues",
+    "email": "support@onlyoffice.com"
+  },
+  "homepage": "https://github.com/ONLYOFFICE/onlyoffice-alfresco-extension#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ONLYOFFICE/alfresco-content-app",
+    "directory": "projects/onlyoffice-alfresco-extension"
+  },
+  "author": "Ascensio System SIA <integration@onlyoffice.com> (https://www.onlyoffice.com)",
+  "maintainers": [
+    "Ascensio System SIA <integration@onlyoffice.com> (https://www.onlyoffice.com)"
+  ],
+  "keywords": [
+    "docs",
+    "office",
+    "alfresco",
+    "onlyoffice"
+  ],
+  "peerDependencies": {
+    "@alfresco/aca-content": ">=0.0.1",
+    "@alfresco/aca-shared": ">=0.0.1",
+    "@alfresco/adf-content-services": ">=8.0.0",
+    "@alfresco/adf-core": ">=8.0.0",
+    "@alfresco/adf-extensions": ">=8.0.0",
+    "@alfresco/js-api": ">=9.0.0",
+    "@angular/common": "^19.2.0",
+    "@angular/core": "^19.2.0",
+    "@angular/forms": "^19.2.6",
+    "@angular/material": "^19.2.9",
+    "@angular/platform-browser": "^19.2.6",
+    "@angular/router": "^19.2.6",
+    "@ngrx/effects": "^19.2.1",
+    "@ngrx/store": "^19.2.1",
+    "@ngx-translate/core": ">=16.0.4",
+    "@onlyoffice/document-editor-angular": "^6.5.1",
+    "rxjs": ">=7.8.2"
+  },
+  "peerDependenciesMeta": {
+    "@alfresco/aca-content": {
+      "optional": true
+    },
+    "@alfresco/aca-shared": {
+      "optional": true
+    }
+  },
+  "sideEffects": false
+}

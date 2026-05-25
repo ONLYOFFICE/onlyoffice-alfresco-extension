@@ -1,0 +1,521 @@
+/**
+ *
+ * (c) Copyright Ascensio System SIA 2026
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
+import { CommonModule } from '@angular/common';
+import { Component, inject, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { Title } from '@angular/platform-browser';
+import { ActivatedRoute, Params } from '@angular/router';
+
+import { GenericErrorComponent } from '@alfresco/aca-shared';
+import { AppStore, NavigateToParentFolder } from '@alfresco/aca-shared/store';
+import { AlfrescoApiService } from '@alfresco/adf-content-services';
+import { LocalizedDatePipe, NotificationService, TranslationService } from '@alfresco/adf-core';
+import { FavoritesApi, Node, NodeEntry, NodesApi } from '@alfresco/js-api';
+import { Store } from '@ngrx/store';
+import { DocumentEditorModule, IConfig } from '@onlyoffice/document-editor-angular';
+
+import { CreateFile, OpenSaveAsDialog } from '../../actions/onlyoffice-alfresco-extension.actions';
+import { OnlyofficeApi } from '../../api/onlyoffice.api';
+import { PermissionsDialogComponent } from '../../dialogs/permissions/permissions.dialog';
+import { FaviconService } from '../../services/favicon.service';
+import { NodeSelectorService, SelectorType } from '../../services/node-selector.service';
+import { UrlService } from '../../services/url.service';
+import { getNodeId } from '../../utils/utils';
+
+@Component({
+  selector: 'onlyoffice-alfresco-extension-editor',
+  imports: [CommonModule, DocumentEditorModule, MatProgressSpinnerModule, GenericErrorComponent],
+  providers: [LocalizedDatePipe],
+  templateUrl: './editor.component.html',
+  styleUrl: './editor.component.scss',
+  encapsulation: ViewEncapsulation.None
+})
+export class EditorComponent implements OnInit, OnDestroy {
+  private localizedDatePipe = inject(LocalizedDatePipe);
+  private nodeSelectorService = inject(NodeSelectorService);
+  private dialog = inject(MatDialog);
+  private onlyofficeApi: OnlyofficeApi;
+  private nodesApi: NodesApi;
+  private favoritesApi: FavoritesApi;
+
+  showSpinner = true;
+  oldFavicon = '';
+
+  editorId = 'onlyofficeEditor';
+  documentServerUrl = '';
+  config: IConfig = {};
+  isDemoServer = false;
+  node: NodeEntry | undefined;
+  error: string | undefined;
+
+  constructor(
+    private route: ActivatedRoute,
+    private store: Store<AppStore>,
+    private translationService: TranslationService,
+    private notificationService: NotificationService,
+    private titleService: Title,
+    private faviconService: FaviconService,
+    private urlService: UrlService,
+    apiService: AlfrescoApiService
+  ) {
+    this.onlyofficeApi = new OnlyofficeApi(apiService.getInstance().contentPrivateClient);
+    this.nodesApi = new NodesApi(apiService.getInstance());
+    this.favoritesApi = new FavoritesApi(apiService.getInstance());
+  }
+
+  ngOnInit() {
+    this.oldFavicon = this.faviconService.getFavicon();
+
+    this.route.params.subscribe(({ nodeId }: Params) => {
+      if (nodeId === 'create-new') {
+        const match = window.name.match(/^create-new-([\w-]+):([\w.-]+\/[\w.+-]+)$/);
+
+        if (match) {
+          const parentId = match[1] || '';
+          const mimeType = match[2] || '';
+
+          this.store.dispatch(
+            new CreateFile(mimeType, parentId, (error) => {
+              this._handleError(error);
+              this.showSpinner = false;
+            })
+          );
+        } else {
+          this.error = 'APP.MESSAGES.ERRORS.GENERIC';
+          this.showSpinner = false;
+        }
+
+        return;
+      }
+
+      this.nodesApi
+        .getNode(nodeId, { include: ['path'] })
+        .then((nodeEntry: NodeEntry) => {
+          this.node = nodeEntry;
+        })
+        .catch((error) => {
+          console.error(error);
+
+          this._handleError(error);
+        });
+
+      this.onlyofficeApi
+        .getEditorConfig(nodeId)
+        .then((config) => {
+          const { error } = config;
+          if (error) {
+            this.error = 'APP.MESSAGES.ERRORS.MISSING_CONTENT';
+            return;
+          }
+
+          this.documentServerUrl = new URL(config.documentServerApiUrl).origin; // ToDo send from backend
+          this.config = config.editorConfig;
+          this.isDemoServer = config.demo;
+
+          this.titleService.setTitle(this.config.document?.title + ' - ONLYOFFICE');
+          this.faviconService.setFavicon(`/assets/onlyoffice-alfresco-extension/images/${this.config.documentType}.ico`);
+
+          this._updateCustomization(this.config.editorConfig?.customization);
+
+          if (this._isMobile()) {
+            this.config.type = 'mobile';
+          }
+
+          this._removeTemplates(this.config);
+          if (this.config.editorConfig) {
+            this.config.editorConfig.lang = this.translationService.userLang;
+          }
+
+          this.config.events = {
+            onAppReady: this.onAppReady,
+            onMetaChange: this.onMetaChange,
+            onRequestCreateNew: this.onRequestCreateNew,
+            onRequestClose: this.onRequestClose,
+            onRequestHistory: this.onRequestHistory,
+            onRequestHistoryClose: this.onRequestHistoryClose,
+            onRequestHistoryData: this.onRequestHistoryData,
+            onRequestInsertImage: this.onRequestInsertImage,
+            onRequestMailMergeRecipients: this.onRequestMailMergeRecipients,
+            onRequestOpen: this.onRequestOpen,
+            onRequestCompareFile: this.onRequestCompareFile,
+            onRequestReferenceData: this.onRequestReferenceData,
+            onRequestReferenceSource: this.onRequestReferenceSource,
+            onRequestSaveAs: this.onRequestSaveAs,
+            onRequestSharingSettings: config.canManagePermissions ? this.onRequestSharingSettings : undefined
+          };
+        })
+        .catch((error) => {
+          console.error(error);
+
+          this._handleError(error);
+        })
+        .finally(() => {
+          this.showSpinner = false;
+        });
+    });
+  }
+
+  ngOnDestroy() {
+    this.faviconService.setFavicon(this.oldFavicon);
+    if (window.DocsAPI) {
+      delete window.DocsAPI;
+    }
+  }
+
+  private _updateCustomization = (customization: any) => {
+    customization = customization || {};
+    customization.goback = {};
+    customization.close = {
+      text: '',
+      visible: true
+    };
+  };
+
+  private _isMobile = () => {
+    // eslint-disable-next-line max-len
+    return /android|avantgo|playbook|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od|ad)|iris|kindle|lge |maemo|midp|mmp|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\\|plucker|pocket|psp|symbian|treo|up\\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i.test(
+      navigator.userAgent
+    );
+  };
+
+  private _removeTemplates = (config: any) => {
+    config.editorConfig.templates = null;
+  };
+
+  onLoadComponentError = () => {
+    this.error = 'ONLYOFFICE_ALFRESCO_EXTENSION.PAGES.EDITOR.MESSAGES.DOCS_API_UNDEFINED';
+  };
+
+  onAppReady = () => {
+    if (this.isDemoServer) {
+      window?.DocEditor?.instances[this.editorId].showMessage(
+        this.translationService.instant('ONLYOFFICE_ALFRESCO_EXTENSION.PAGES.EDITOR.MESSAGES.DEMO_NOTIFICATION')
+      );
+    }
+  };
+
+  onMetaChange = (event: object) => {
+    if (this.node) {
+      const { data } = event as { data: any };
+      const { favorite } = data;
+
+      if (favorite) {
+        this.favoritesApi
+          .createFavorite('-me-', {
+            target: {
+              ['file']: {
+                guid: this.node?.entry.id
+              }
+            }
+          })
+          .then(() => window?.DocEditor?.instances[this.editorId].setFavorite(favorite))
+          .catch((error) => {
+            console.error(error);
+          });
+      } else {
+        this.favoritesApi
+          .deleteFavorite('-me-', this.node?.entry.id)
+          .then(() => window?.DocEditor?.instances[this.editorId].setFavorite(favorite))
+          .catch((error) => {
+            console.error(error);
+          });
+      }
+    }
+  };
+
+  onRequestCreateNew = () => {
+    let mimeType = '';
+
+    switch (this.config.documentType) {
+      case 'word':
+        mimeType = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+        break;
+      case 'cell':
+        mimeType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+        break;
+      case 'slide':
+        mimeType = 'application/vnd.openxmlformats-officedocument.presentationml.presentation';
+        break;
+      case 'pdf':
+        mimeType = 'application/pdf';
+        break;
+      default:
+        return;
+    }
+
+    window.open(this.urlService.createUrl(['/onlyoffice-editor', 'create-new']), `create-new-${this.node?.entry.parentId}:${mimeType}`);
+  };
+
+  onRequestHistory = () => {
+    if (this.node) {
+      this.onlyofficeApi
+        .getHistory(this.node?.entry.id)
+        .then((historyInfo) => {
+          for (let i = 0; i < historyInfo.history.length; i++) {
+            historyInfo.history[i].created = this.localizedDatePipe.transform(historyInfo.history[i].created, 'short');
+
+            if (historyInfo.history[i].changes) {
+              for (let t = 0; t < historyInfo.history[i].changes.length; t++) {
+                const created = new Date(historyInfo.history[i].changes[t].created);
+                const createdUTC = new Date(
+                  Date.UTC(
+                    created.getFullYear(),
+                    created.getMonth(),
+                    created.getDate(),
+                    created.getHours(),
+                    created.getMinutes(),
+                    created.getSeconds()
+                  )
+                );
+
+                historyInfo.history[i].changes[t].created = this.localizedDatePipe.transform(createdUTC.toISOString(), 'short');
+              }
+            }
+          }
+
+          window?.DocEditor?.instances[this.editorId].refreshHistory({
+            currentVersion: historyInfo.currentVersion,
+            history: historyInfo.history
+          });
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+  };
+
+  onRequestHistoryClose = function () {
+    document.location.reload();
+  };
+
+  onRequestHistoryData = (event: object) => {
+    if (this.node) {
+      const version = (event as { data: string }).data;
+
+      this.onlyofficeApi
+        .getHistoryData(this.node?.entry.id, version)
+        .then((historyData) => {
+          if (historyData) {
+            window?.DocEditor?.instances[this.editorId].setHistoryData(historyData);
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+  };
+
+  onRequestInsertImage = (event: object) => {
+    if (this.node) {
+      const select = this.nodeSelectorService.getContentNodeSelection(SelectorType.INSERT_IMAGE, this.node);
+
+      const command = (event as { data: { c: string } }).data.c;
+
+      select.subscribe((nodes: Node[]) => {
+        const items = nodes.map((node) => {
+          return 'workspace://SpacesStore/' + node.id;
+        });
+
+        if (items.length > 0) {
+          this.onlyofficeApi
+            .getInsertData(command, items)
+            .then((data) => {
+              window?.DocEditor?.instances[this.editorId].insertImage(data[0]);
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        }
+      });
+    }
+  };
+
+  onRequestMailMergeRecipients = () => {
+    if (this.node) {
+      const select = this.nodeSelectorService.getContentNodeSelection(SelectorType.MAIL_MERGE, this.node);
+
+      select.subscribe((nodes: Node[]) => {
+        const items = nodes.map((node) => {
+          return 'workspace://SpacesStore/' + node.id;
+        });
+
+        if (items.length > 0) {
+          this.onlyofficeApi
+            .getInsertData(null, items)
+            .then((data) => {
+              window?.DocEditor?.instances[this.editorId].setMailMergeRecipients(data[0]);
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        }
+      });
+    }
+  };
+
+  onRequestCompareFile = () => {
+    if (this.node) {
+      const select = this.nodeSelectorService.getContentNodeSelection(SelectorType.COMPARE_FILE, this.node);
+
+      select.subscribe((nodes: Node[]) => {
+        const items = nodes.map((node) => {
+          return 'workspace://SpacesStore/' + node.id;
+        });
+
+        if (items.length > 0) {
+          this.onlyofficeApi
+            .getInsertData(null, items)
+            .then((data) => {
+              window?.DocEditor?.instances[this.editorId].setRevisedFile(data[0]);
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        }
+      });
+    }
+  };
+
+  onRequestOpen = (event: object) => {
+    const { data } = event as { data: any };
+    const { referenceData, windowName } = data;
+    const { fileKey } = referenceData;
+
+    const nodeId = getNodeId(fileKey);
+
+    window.open(this.urlService.createUrl(['/onlyoffice-editor', nodeId]), windowName);
+  };
+
+  onRequestReferenceData = (event: object) => {
+    const { data } = event as { data: string };
+
+    this.onlyofficeApi
+      .getReferenceData(data)
+      .then((referenceData) => {
+        window?.DocEditor?.instances[this.editorId].setReferenceData(referenceData);
+      })
+      .catch((error) => {
+        let statusCode: number;
+
+        try {
+          statusCode = JSON.parse(error.message).error.statusCode;
+        } catch (e) {
+          statusCode = 0;
+        }
+
+        let errorMessage;
+        if (statusCode === 403 || statusCode === 404) {
+          errorMessage = this.translationService.instant('APP.MESSAGES.ERRORS.MISSING_CONTENT');
+        } else {
+          errorMessage = this.translationService.instant('APP.MESSAGES.ERRORS.GENERIC');
+        }
+
+        window?.DocEditor?.instances[this.editorId].setReferenceData({ error: errorMessage });
+      });
+  };
+
+  onRequestReferenceSource = () => {
+    if (this.node) {
+      const select = this.nodeSelectorService.getContentNodeSelection(SelectorType.REFERENCE_SOURCE, this.node);
+
+      select.subscribe((nodes: Node[]) => {
+        const items = nodes.map((node) => {
+          return 'workspace://SpacesStore/' + node.id;
+        });
+
+        if (items.length > 0) {
+          const data = {
+            referenceData: {
+              fileKey: items[0]
+            }
+          };
+
+          this.onlyofficeApi
+            .getReferenceData(data)
+            .then((referenceData) => {
+              window?.DocEditor?.instances[this.editorId].setReferenceSource(referenceData);
+            })
+            .catch((error) => {
+              let statusCode: number;
+
+              try {
+                statusCode = JSON.parse(error.message).error.statusCode;
+              } catch (e) {
+                statusCode = 0;
+              }
+
+              if (statusCode === 403 || statusCode === 404) {
+                this.notificationService.showError('APP.MESSAGES.ERRORS.MISSING_CONTENT');
+              } else {
+                this.notificationService.showError('APP.MESSAGES.ERRORS.GENERIC');
+              }
+            });
+        }
+      });
+    }
+  };
+
+  onRequestSharingSettings = () => {
+    if (this.node) {
+      this.dialog.open(PermissionsDialogComponent, {
+        data: this.node.entry,
+        width: '800px',
+        role: 'dialog'
+      });
+    }
+  };
+
+  onRequestSaveAs = (event: object) => {
+    const { data } = event as { data: any };
+    const { title, url } = data;
+
+    if (this.node) {
+      this.store.dispatch(
+        new OpenSaveAsDialog({
+          nodeEntry: this.node,
+          title,
+          url
+        })
+      );
+    }
+  };
+
+  onRequestClose = () => {
+    if (this.node) {
+      this.store.dispatch(new NavigateToParentFolder(this.node));
+    }
+  };
+
+  private _handleError(error: Error) {
+    let statusCode: number;
+
+    try {
+      statusCode = JSON.parse(error.message).error.statusCode;
+    } catch (e) {
+      statusCode = 0;
+    }
+
+    if (statusCode !== 409) {
+      this.error = 'APP.MESSAGES.ERRORS.GENERIC';
+    } else {
+      this.error = 'APP.MESSAGES.ERRORS.CONFLICT';
+    }
+  }
+}
