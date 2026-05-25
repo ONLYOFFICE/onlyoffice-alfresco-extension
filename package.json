@@ -1,6 +1,6 @@
 {
   "name": "@onlyoffice/alfresco-extension",
-  "version": "0.0.3",
+  "version": "1.0.0",
   "description": "ONLYOFFICE extension for Alfresco Content App - Edit, co-author, and manage office files directly inside Alfresco using ONLYOFFICE Docs",
   "license": "Apache-2.0",
   "bugs": {

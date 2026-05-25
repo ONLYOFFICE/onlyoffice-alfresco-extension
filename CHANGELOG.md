@@ -1,6 +1,6 @@
 # Change Log
 
-##
+## 1.0.0
 ## Added
 - opening for viewing OOXML
 - opening for editing OOXML
